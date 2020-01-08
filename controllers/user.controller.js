@@ -68,7 +68,15 @@ module.exports = {
             if(bcrypt.compareSync(req.body.password, data.password)) {
                 const token = jwt.sign({id: data._id}, req.app.get('secretKey'), { expiresIn: '2h' });
                 return res.status(200)
-                    .json( response.success('User successfully logined', { token: token }))
+                    .json( response.success('User successfully logined', 
+                        { 
+                            token: token,
+                            email : data.email,
+                            role : data.role,
+                            name : data.name,
+                            phone : data.phone
+                        }
+                    ))
             } else {
                 return res.status(422).json( response.error('"Invalid email/password!!!') )
             }
