@@ -31,8 +31,7 @@ const UserSchema = new mongoose.Schema({
         set: v => v.toLowerCase()
     },
     website : { 
-        type: String, 
-        set: v => v.toLowerCase()
+        type: String
     }
 },{
     timestamps : true

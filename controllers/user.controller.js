@@ -19,6 +19,43 @@ module.exports = {
             return res.status(422).json( response.error('Failed to get user') )
         })
     },
+    find: function(req, res, next) {
+        Model.findById(req.body.id)
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('User successfully received', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to get user') )
+        })
+    },
+    destroy: function(req, res, next) {
+        Model.findByIdAndRemove(req.body.id)
+        .then(() => {
+            return res.status(200)
+                .json( response.success('User successfully deleted', null) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to delete user') )
+        })
+    },
+    patch: function(req, res, next) {
+        Model.findByIdAndUpdate(req.body.id, {
+            name : req.body.name,
+            email : req.body.email,
+            phone : req.body.phone
+        })
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('User successfully updated', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to update user') )
+        })
+    },
     adminList: function(req, res, next) {
         Model.find({ role : 'administrator'})
         .then((data) => {
