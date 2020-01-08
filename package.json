@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/alvianzf/helpdesk-API#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "mongoose": "^4.13.20"
   }
 }
