@@ -47,7 +47,8 @@ module.exports = {
             password : req.body.password,
             name : req.body.name,
             phone : req.body.phone,
-            role : req.body.role
+            role : req.body.role,
+            website : req.body.website ? req.body.website : null
         })
         user.save()
         .then((data) => {

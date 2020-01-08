@@ -29,6 +29,10 @@ const UserSchema = new mongoose.Schema({
         type: String, 
         required: [true, `Role it's required`],
         set: v => v.toLowerCase()
+    },
+    website : { 
+        type: String, 
+        set: v => v.toLowerCase()
     }
 },{
     timestamps : true
