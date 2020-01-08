@@ -8,6 +8,39 @@ module.exports = {
         return res.status(200)
         .json( response.success('Testing successfully', null) )
     },
+    all: function(req, res, next) {
+        Model.find()
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('User successfully received', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to get user') )
+        })
+    },
+    adminList: function(req, res, next) {
+        Model.find({ role : 'administrator'})
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('Admin successfully received', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to get admin') )
+        })
+    },
+    userList: function(req, res, next) {
+        Model.find({ role : 'customer service'})
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('Customer service successfully received', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to get customer service') )
+        })
+    },
     create: function(req, res, next) {
         const user = new Model({
             email : req.body.email,
