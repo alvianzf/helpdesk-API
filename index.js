@@ -15,6 +15,7 @@ mongoose.connect(process.env.DB_URL, {
     useFindAndModify: false
 }).then( (db) => {
     console.log('Server connected to mongodb.......')
+    app.set('secretKey', 'nodeRestApi')
     app.use(express.urlencoded({ extended: false }))
     app.use(express.json());
     app.use('/api', router)

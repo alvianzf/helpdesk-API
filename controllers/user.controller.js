@@ -58,5 +58,24 @@ module.exports = {
             console.log(err)
             return res.status(422).json( response.error('Failed to create user') )
         })
+    },
+    authenticate: function(req, res, next) {
+        Model.findOne({
+            email : req.body.email,
+            role : req.body.role
+        })
+        .then((data) => {
+            if(bcrypt.compareSync(req.body.password, data.password)) {
+                const token = jwt.sign({id: data._id}, req.app.get('secretKey'), { expiresIn: '2h' });
+                return res.status(200)
+                    .json( response.success('User successfully logined', { token: token }))
+            } else {
+                return res.status(422).json( response.error('"Invalid email/password!!!') )
+            }
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to create user') )
+        })
     }
 }

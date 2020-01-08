@@ -3,6 +3,7 @@ const router = express.Router()
 const controller = require('../controllers/user.controller')
 
 router.post('/register', controller.create)
+router.post('/login', controller.authenticate)
 router.get('/test', controller.get)
 router.get('/list', controller.all)
 router.get('/list/admin', controller.adminList)
