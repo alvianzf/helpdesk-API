@@ -99,8 +99,7 @@ module.exports = {
     },
     authenticate: function(req, res, next) {
         Model.findOne({
-            email : req.body.email,
-            role : req.body.role
+            email : req.body.email
         })
         .then((data) => {
             if(bcrypt.compareSync(req.body.password, data.password)) {
