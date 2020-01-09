@@ -32,7 +32,7 @@ mongoose.connect(process.env.DB_URL, {
     })
 }).catch( (err) => {
     console.log(err);
-    server.on('error', (req, res) => {
+    app.on('error', (req, res) => {
         console.log('server crashed')
         res.status(500).send("Not enough Power")
     })
