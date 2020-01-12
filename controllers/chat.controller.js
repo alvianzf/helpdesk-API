@@ -138,5 +138,16 @@ module.exports = {
             console.log(err)
             return res.status(422).json( response.error('Failed to get channel') )
         })
+    },
+    listOpenByOperator : (req, res) => {
+        Chat.find({ is_open : true, active_operator : req.body.operator })
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('channel successfully received', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to get channel') )
+        })
     }
 }

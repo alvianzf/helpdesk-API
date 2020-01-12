@@ -9,5 +9,6 @@ router.post('/assign/operator', controller.assignOperator)
 router.post('/list/message/bychannel', controller.listMessageByChannel)
 router.get('/list/active', controller.listOpenChat)
 router.get('/list/recent', controller.listRecentChat)
+router.post('/list/active/byoperator', controller.listOpenByOperator)
 
 module.exports = router
