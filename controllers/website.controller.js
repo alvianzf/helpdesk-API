@@ -13,12 +13,22 @@ module.exports = {
             return res.status(422).json( response.error('Failed to get website') )
         })
     },
-    create : function(req, res, next) {
-        const website = new Model({
+    create : async (req, res, next) => {
+        const website = await new Model({
             name : req.body.name,
             ip : req.body.ip
         })
-        website.save()
+
+        const websiteExists = await Model.findOne({
+            name : req.body.name,
+            ip : req.body.ip
+        })
+
+        if (websiteExists) {
+            return res.status(200)
+                .json( response.success('Website already created', null) )
+        }
+        await website.save()
         .then((data) => {
             return res.status(200)
                 .json( response.success('Website successfully created', null) )
