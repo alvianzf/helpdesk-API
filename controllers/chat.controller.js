@@ -32,6 +32,20 @@ module.exports = {
             return res.status(422).json( response.error('Failed to create message') )
         }
     },
+    findChannel : async (req, res) => {
+        try {
+
+            const chat = await Chat.findOne({ _id : req.body.channel_id, active_operator : { $ne: null } })
+                .populate({ path: 'active_operator' }).populate({ path: 'message' }).populate({ path : 'recent_operator'})
+                .select('-__v')
+
+            return res.status(201).json( response.success('Chat successfully received', chat) )
+
+        } catch (error) {
+            console.log(error)
+            return res.status(422).json( response.error('Failed to assign operator') )
+        }
+    },
     assignOperator : async (req, res) => {
         try {
 
