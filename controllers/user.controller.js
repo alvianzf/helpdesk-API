@@ -9,7 +9,7 @@ module.exports = {
         .json( response.success('Testing successfully', null) )
     },
     all: function(req, res, next) {
-        Model.find()
+        Model.find().populate({ path: 'website' }).select('-__v')
         .then((data) => {
             return res.status(200)
                 .json( response.success('User successfully received', data) )
@@ -20,7 +20,7 @@ module.exports = {
         })
     },
     find: function(req, res, next) {
-        Model.findById(req.body.id)
+        Model.findById(req.body.id).populate({ path: 'website' }).select('-__v')
         .then((data) => {
             return res.status(200)
                 .json( response.success('User successfully received', data) )
@@ -57,7 +57,7 @@ module.exports = {
         })
     },
     adminList: function(req, res, next) {
-        Model.find({ role : 'administrator'})
+        Model.find({ role : 'administrator'}).populate({ path: 'website' }).select('-__v')
         .then((data) => {
             return res.status(200)
                 .json( response.success('Admin successfully received', data) )
@@ -68,7 +68,7 @@ module.exports = {
         })
     },
     userList: function(req, res, next) {
-        Model.find({ role : 'customer service'})
+        Model.find({ role : 'customer service'}).populate({ path: 'website' }).select('-__v')
         .then((data) => {
             return res.status(200)
                 .json( response.success('Customer service successfully received', data) )

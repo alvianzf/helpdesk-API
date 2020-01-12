@@ -11,9 +11,6 @@ const UserSchema = new mongoose.Schema({
         set: v => v.toLowerCase(),
         get: ucwords
     },
-    uuid : {
-        type : String
-    },
     password : {
         type: String, 
         required: [true, `Password it's required`],
@@ -34,8 +31,10 @@ const UserSchema = new mongoose.Schema({
         set: v => v.toLowerCase()
     },
     website : { 
-        type: String
-    }
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Website'
+    },
+    is_serving : { type : Boolean , default : false}
 },{
     timestamps : true
 })
