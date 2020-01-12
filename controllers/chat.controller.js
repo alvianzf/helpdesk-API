@@ -63,7 +63,7 @@ module.exports = {
 
                 return res.status(201).json( response.success('Operator successfully assigned', activeChat) )
             } else {
-                return res.status(400).json( response.success('All Operator Busy', null) )
+                return res.status(400).json( response.error('All Operator Busy', null) )
             }
 
         } catch (error) {
@@ -78,5 +78,29 @@ module.exports = {
             .select('-__v')
 
         return res.status(201).json( response.success('Message successfully received', chat) )
+    },
+    sendNewMessageAsGuest : async (req, res) => {
+        const { message } = req.body
+
+        try {
+            const newMessage = new Message({
+                message
+            })
+
+            const storeMessage = await newMessage.save()
+
+            const chatExist = await Chat.findOne({ _id : req.body.channel_id })
+            if (chatExist) {
+                await chatExist.message.push(storeMessage._id)
+                const storeChat = await chatExist.save()
+
+                return res.status(201).json( response.success('Message successfully sent', storeChat) )
+            }
+
+            return res.status(400).json( response.error('Channel Not Found', null) )
+
+        } catch (error) {
+            return res.status(422).json( response.error('Failed to send message') )
+        }
     }
 }
