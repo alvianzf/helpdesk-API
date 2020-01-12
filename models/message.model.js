@@ -7,7 +7,7 @@ const messageSchema = new mongoose.Schema({
     is_guest : { type: Boolean, default : true },
     is_operator : { type: Boolean, default : false },
     operator : { 
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
 }, { 

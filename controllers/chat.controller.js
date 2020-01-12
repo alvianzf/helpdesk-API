@@ -1,6 +1,7 @@
 const Chat = require('../models/chat.model'),
     Message = require('../models/message.model'),
-    response  = require('../helpers/response')
+    response  = require('../helpers/response'),
+    User = require('../models/user.model')
 
 module.exports = {
     createNewChannel: async (req, res) => {
@@ -31,9 +32,49 @@ module.exports = {
             return res.status(422).json( response.error('Failed to create message') )
         }
     },
+    assignOperator : async (req, res) => {
+        try {
+
+            const isChatHaveOperator = await Chat.findOne({ _id : req.body.channel_id, active_operator : { $ne: null } })
+                .populate({ path: 'active_operator' }).populate({ path: 'message' }).populate({ path : 'recent_operator'})
+                .select('-__v')
+
+            if(isChatHaveOperator) {
+                return res.status(200).json( response.success('Channel already have operator', isChatHaveOperator) )
+            }
+            
+            const selectRandomOperator = await User.aggregate([
+                { $match: { role : 'customer service', is_serving : false } },
+                { $sample: { size : 1} }
+            ])
+        
+            if(selectRandomOperator.length > 0) {
+                await User.findByIdAndUpdate({ _id : selectRandomOperator[0]._id }, {
+                    is_serving : true
+                })
+
+                await Chat.findByIdAndUpdate({ _id : req.body.channel_id }, {
+                    active_operator : selectRandomOperator[0]._id
+                })
+
+                const activeChat = await  Chat.findOne({ _id : req.body.channel_id})
+                    .populate({ path: 'active_operator' }).populate({ path: 'message' }).populate({ path : 'recent_operator'})
+                    .select('-__v')
+
+                return res.status(201).json( response.success('Operator successfully assigned', activeChat) )
+            } else {
+                return res.status(400).json( response.success('All Operator Busy', null) )
+            }
+
+        } catch (error) {
+            console.log(error)
+            return res.status(422).json( response.error('Failed to assign operator') )
+        }
+    },
     listMessageByChannel : async (req, res) => {
         
-        const chat = await Chat.findOne({ _id : req.body.channel_id}).populate({ path: 'message' })
+        const chat = await Chat.findOne({ _id : req.body.channel_id})
+            .populate({ path: 'active_operator' }).populate({ path: 'message' }).populate({ path : 'recent_operator'})
             .select('-__v')
 
         return res.status(201).json( response.success('Message successfully received', chat) )

@@ -10,6 +10,14 @@ const ChatScheme = new mongoose.Schema({
     phone : {
         type : String
     },
+    active_operator : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    recent_operator : [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
     message: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Message'
