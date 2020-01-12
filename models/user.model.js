@@ -11,6 +11,9 @@ const UserSchema = new mongoose.Schema({
         set: v => v.toLowerCase(),
         get: ucwords
     },
+    uuid : {
+        type : String
+    },
     password : {
         type: String, 
         required: [true, `Password it's required`],
@@ -50,6 +53,6 @@ function ucwords(str) {
     });
 }
 UserSchema.plugin(uniqueValidator, { message: 'Error, expected {PATH} to be unique.' })
-const User = mongoose.model('user', UserSchema)
+const User = mongoose.model('User', UserSchema)
 
 module.exports = User

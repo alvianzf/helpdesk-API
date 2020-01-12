@@ -23,6 +23,6 @@ function ucwords(str) {
     });
 }
 
-const Website = mongoose.model('website', WebsiteSchema)
+const Website = mongoose.model('Website', WebsiteSchema)
 
 module.exports = Website
