@@ -111,7 +111,8 @@ module.exports = {
                             email : data.email,
                             role : data.role,
                             name : data.name,
-                            phone : data.phone
+                            phone : data.phone,
+                            id : data._id
                         }
                     ))
             } else {
