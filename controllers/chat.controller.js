@@ -116,5 +116,16 @@ module.exports = {
         } catch (error) {
             return res.status(422).json( response.error('Failed to send message') )
         }
+    },
+    listOpenChat : async (req, res) => {
+        Chat.find({ is_open : true })
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('channel successfully received', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to get channel') )
+        })
     }
 }
