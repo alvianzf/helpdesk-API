@@ -5,7 +5,9 @@ const express = require('express'),
     router = require('./routes'),
     jwt = require('jsonwebtoken'),
     mongoose = require('mongoose'),
-    cors = require('cors');
+    cors = require('cors'),
+    socket = require('socket.io'),
+    Chat = require('./models/chat.model')
 
 console.log('Waiting connection from mongodb')
 mongoose.set('useCreateIndex', true)
@@ -27,8 +29,23 @@ mongoose.connect(process.env.DB_URL, {
     app.get('*', (req, res) => {
         res.status(404).send("opps... are u lost in the dark?")
     })
-    app.listen(process.env.APP_PORT || 3000, () => {
+    let server = app.listen(process.env.APP_PORT || 3000, () => {
         console.log(`Server is listening in port ${process.env.APP_PORT || 3000}`)
+    })
+
+    let io = socket(server);
+
+    io.on("connection", function(socket){
+        console.log("Socket Connection Established with ID :"+ socket.id)
+
+        socket.on("get_list_chat_unoperator", async function(data) {
+            try {
+                const list = await Chat.find({ website : data.website, active_operator : null})  
+                io.emit('unoperator_list_chat', { data: list })
+            } catch (error) {
+                io.emit('unoperator_list_chat', { data: [] })
+            }
+        })
     })
 }).catch( (err) => {
     console.log(err);

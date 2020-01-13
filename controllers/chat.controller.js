@@ -32,5 +32,14 @@ module.exports = {
         } catch (error) {
             return res.status(422).json( response.error('Failed to create message') )
         }
+    },
+    listChatNoOperatorByWebsite : async (req, res) => {
+        try {
+            const chats = Chat.find({ website : req.body.website, active_operator : null})
+
+            return res.status(201).json( response.success('Message successfully created', chats) )
+        } catch (error) {
+            return res.status(422).json( response.error('Failed to get list chat') )
+        }
     }
 }
