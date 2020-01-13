@@ -5,6 +5,7 @@ const upload = require('../middleware/multer')
 
 router.post('/new/channel', controller.createNewChannel)
 router.post('/list/active/bywebsite', controller.listActiveChatByWebsite)
+router.post('/list/recent/bywebsite', controller.listRecentChatByWebsite)
 router.post('/findbyid', controller.getChatById)
 router.post('/new/message/operator', controller.sendNewMessageAsOperator)
 router.post('/new/message/guest', controller.sendNewMessageAsGuest)

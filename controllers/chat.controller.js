@@ -56,6 +56,20 @@ module.exports = {
             return res.status(422).json( response.error('Failed to get chat') )
         })  
     },
+    listRecentChatByWebsite : async (req, res) => {
+        Chat.find({ website : req.body.website, is_open : false})
+            .populate({ path: 'active_operator' })
+            .select('-__v')
+
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('chat successfully received', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to get chat') )
+        })  
+    },
     getChatById : async (req, res) => {
         Chat.findById(req.body.id)
             .populate({ path: 'website' })
