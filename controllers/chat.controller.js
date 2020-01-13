@@ -79,8 +79,33 @@ module.exports = {
             const newMessage = new Message({
                 message,
                 is_guest : false,
-                is_operator : true,
-                is_read : true
+                is_operator : true
+            })
+
+            const storeMessage = await newMessage.save()
+
+            const chatExist = await Chat.findOne({ _id : req.body.id })
+            if (chatExist) {
+                await chatExist.message.push(storeMessage._id)
+                const storeChat = await chatExist.save()
+
+                return res.status(201).json( response.success('Message successfully sent', storeChat) )
+            }
+
+            return res.status(400).json( response.error('Channel Not Found', null) )
+
+        } catch (error) {
+            return res.status(422).json( response.error('Failed to send message') )
+        }
+    },
+    sendNewMessageAsGuest : async (req, res) => {
+        const { message } = req.body
+
+        try {
+            const newMessage = new Message({
+                message,
+                is_guest : true,
+                is_operator : false
             })
 
             const storeMessage = await newMessage.save()
