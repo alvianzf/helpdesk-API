@@ -235,5 +235,18 @@ module.exports = {
             console.log(err)
             return res.status(422).json( response.error('Failed to close chat') )
         })  
+    },
+    transferChatById : async (req, res) => {
+        Chat.findByIdAndUpdate({ _id : req.body.id} , {
+            active_operator : req.body.operator
+        })
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('chat successfully transfered', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to transfer chat') )
+        })  
     }
 }

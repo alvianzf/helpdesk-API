@@ -78,6 +78,17 @@ module.exports = {
             return res.status(422).json( response.error('Failed to get customer service') )
         })
     },
+    userListByWebsite : function(req, res, next) {
+        Model.find({ role : 'customer service', website : req.body.website }).populate({ path: 'website' }).select('-__v')
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('Customer service successfully received', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to get customer service') )
+        })
+    },
     create: function(req, res, next) {
         const user = new Model({
             email : req.body.email,

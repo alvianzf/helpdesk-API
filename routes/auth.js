@@ -11,5 +11,6 @@ router.get('/test', controller.get)
 router.get('/list', controller.all)
 router.get('/list/admin', controller.adminList)
 router.get('/list/cso', controller.userList)
+router.post('/list/cso/bywebsite', controller.userListByWebsite)
 
 module.exports = router
