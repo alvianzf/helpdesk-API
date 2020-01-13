@@ -4,4 +4,6 @@ const controller = require('../controllers/chat.controller')
 
 router.post('/new/channel', controller.createNewChannel)
 router.post('/list/active/bywebsite', controller.listActiveChatByWebsite)
+router.post('/findbyid', controller.getChatById)
+
 module.exports = router
