@@ -41,5 +41,16 @@ module.exports = {
         } catch (error) {
             return res.status(422).json( response.error('Failed to get list chat') )
         }
+    },
+    listActiveChatByWebsite : async (req, res) => {
+        Chat.find({ website : req.body.website, is_open : true})
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('chat successfully received', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to get chat') )
+        })  
     }
 }
