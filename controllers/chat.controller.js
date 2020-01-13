@@ -44,6 +44,9 @@ module.exports = {
     },
     listActiveChatByWebsite : async (req, res) => {
         Chat.find({ website : req.body.website, is_open : true})
+            .populate({ path: 'active_operator' })
+            .select('-__v')
+
         .then((data) => {
             return res.status(200)
                 .json( response.success('chat successfully received', data) )
@@ -68,5 +71,49 @@ module.exports = {
             console.log(err)
             return res.status(422).json( response.error('Failed to get chat') )
         })  
+    },
+    sendNewMessageAsOperator : async (req, res) => {
+        const { message } = req.body
+
+        try {
+            const newMessage = new Message({
+                message,
+                is_guest : false,
+                is_operator : true,
+                is_read : true
+            })
+
+            const storeMessage = await newMessage.save()
+
+            const chatExist = await Chat.findOne({ _id : req.body.id })
+            if (chatExist) {
+                await chatExist.message.push(storeMessage._id)
+                const storeChat = await chatExist.save()
+
+                return res.status(201).json( response.success('Message successfully sent', storeChat) )
+            }
+
+            return res.status(400).json( response.error('Channel Not Found', null) )
+
+        } catch (error) {
+            return res.status(422).json( response.error('Failed to send message') )
+        }
+    },
+    assignOperator : async (req, res) => {
+        try {
+            const chatExist = await Chat.findOne({ _id : req.body.id })
+            if (chatExist && !chatExist.active_operator) {
+                const assignOperator = await Chat.findByIdAndUpdate({ _id : req.body.id },{
+                    active_operator : req.body.operator
+                })
+                return res.status(201).json( response.success('Chat successfully assigned', assignOperator) )
+            } else {
+                return res.status(201).json( response.success('already have operator', null) )
+            }
+
+        } catch (error) {
+            console.log(error)
+            return res.status(422).json( response.error('Failed to assign operator') )
+        }
     }
 }
