@@ -26,12 +26,12 @@ module.exports = {
 
         if (websiteExists) {
             return res.status(200)
-                .json( response.success('Website already created', null) )
+                .json( response.success('Website already created', websiteExists) )
         }
         await website.save()
         .then((data) => {
             return res.status(200)
-                .json( response.success('Website successfully created', null) )
+                .json( response.success('Website successfully created', data) )
         })
         .catch((err) => {
             console.log(err)

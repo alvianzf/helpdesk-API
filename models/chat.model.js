@@ -22,7 +22,11 @@ const ChatScheme = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Message'
     }],
-    is_open : { type : Boolean, default : true }
+    is_open : { type : Boolean, default : true },
+    website : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Website'
+    }
 },{
     timestamps : true
 })
