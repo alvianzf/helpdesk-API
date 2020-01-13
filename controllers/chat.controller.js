@@ -208,5 +208,18 @@ module.exports = {
         } catch (error) {
             return res.status(422).json( response.error('Failed to send message') )
         }
+    },
+    endChatById : async (req, res) => {
+        Chat.findByIdAndUpdate({ _id : req.body.id} , {
+            is_open : false
+        })
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('chat successfully closed', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to close chat') )
+        })  
     }
 }
