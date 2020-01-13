@@ -10,5 +10,6 @@ router.post('/new/message/operator', controller.sendNewMessageAsOperator)
 router.post('/new/message/guest', controller.sendNewMessageAsGuest)
 router.post('/assign/operator', controller.assignOperator)
 router.post('/attach/guest', upload.single('attach'), controller.sendImageAsGuest)
+router.post('/attach/operator', upload.single('attach'), controller.sendImageAsOperator)
 
 module.exports = router
