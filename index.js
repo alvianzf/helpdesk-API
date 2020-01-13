@@ -22,6 +22,7 @@ mongoose.connect(process.env.DB_URL, {
     app.use(cors())
     app.use(express.urlencoded({ extended: false }))
     app.use(express.json());
+    app.use(express.static('public/images'))
     app.use('/api', router)
     app.get('/' , (req, res) => {
         res.status(200).send(" This is an empty place")

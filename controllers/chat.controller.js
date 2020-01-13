@@ -140,5 +140,39 @@ module.exports = {
             console.log(error)
             return res.status(422).json( response.error('Failed to assign operator') )
         }
+    },
+    sendImageAsGuest : async (req, res) => {
+        const file = req.file
+
+        try {
+            if (!file) {
+                return res.status(415).json( response.error('File is not supported') )
+            } else if (file.size > 5000000) {
+                await fs.unlinkSync(file.path)
+                return res.status(413).json( response.error('File size too large') )
+            }
+
+            
+            const newMessage = new Message({
+                media : file.filename,
+                is_guest : true,
+                is_operator : false
+            })
+
+            const storeMessage = await newMessage.save()
+
+            const chatExist = await Chat.findOne({ _id : req.body.id })
+            if (chatExist) {
+                await chatExist.message.push(storeMessage._id)
+                const storeChat = await chatExist.save()
+
+                return res.status(201).json( response.success('Message successfully sent', storeChat) )
+            }
+
+            return res.status(400).json( response.error('Channel Not Found', null) )
+
+        } catch (error) {
+            return res.status(422).json( response.error('Failed to send message') )
+        }
     }
 }
