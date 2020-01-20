@@ -133,7 +133,7 @@ module.exports = {
         })
         .catch((err) => {
             console.log(err)
-            return res.status(422).json( response.error('Failed to create user') )
+            return res.status(422).json( response.error('Invalid email/password!!!') )
         })
     }
 }
