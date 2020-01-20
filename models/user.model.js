@@ -7,9 +7,7 @@ const UserSchema = new mongoose.Schema({
     email: { 
         type: String, 
         required: [true, `Email it's required`],
-        unique : true,
-        set: v => v.toLowerCase(),
-        get: ucwords
+        unique : true
     },
     password : {
         type: String, 
@@ -18,8 +16,7 @@ const UserSchema = new mongoose.Schema({
     },
     name: { 
         type: String, 
-        required: [true, `Name it's required`],
-        set: v => v.toLowerCase()
+        required: [true, `Name it's required`]
     },
     phone : { 
         type: String, 
@@ -27,8 +24,7 @@ const UserSchema = new mongoose.Schema({
     },
     role : { 
         type: String, 
-        required: [true, `Role it's required`],
-        set: v => v.toLowerCase()
+        required: [true, `Role it's required`]
     },
     website : { 
         type: mongoose.Schema.Types.ObjectId,
