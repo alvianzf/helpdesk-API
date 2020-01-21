@@ -1,10 +1,7 @@
 const mongoose = require('mongoose')
     
 const ChatScheme = new mongoose.Schema({
-    name: { 
-        type: String,
-    },
-    email : {
+    ticket_id : {
         type : String
     },
     phone : {

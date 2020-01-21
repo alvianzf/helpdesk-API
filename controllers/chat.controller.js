@@ -5,7 +5,7 @@ const Chat = require('../models/chat.model'),
 
 module.exports = {
     createNewChannel: async (req, res) => {
-        const { name, email, phone, message, website } = req.body
+        const { ticket_id, message, website } = req.body
 
         try {
             const newMessage = new Message({
@@ -18,9 +18,7 @@ module.exports = {
             const storeMessage = await newMessage.save()
 
             const newChat = new Chat({
-                name,
-                email,
-                phone,
+                ticket_id,
                 message: storeMessage._id,
                 website
             })
@@ -34,13 +32,15 @@ module.exports = {
         }
     },
     listChatNoOperatorByWebsite : async (req, res) => {
-        try {
-            const chats = Chat.find({ website : req.body.website, active_operator : null})
-
-            return res.status(201).json( response.success('Message successfully created', chats) )
-        } catch (error) {
-            return res.status(422).json( response.error('Failed to get list chat') )
-        }
+        Chat.find({ website : req.body.website, active_operator : null})
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('chat successfully received', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to get chat') )
+        })  
     },
     listActive : async (req, res) => {
         Chat.find({ is_open : true})
