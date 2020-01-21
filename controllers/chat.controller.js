@@ -282,5 +282,84 @@ module.exports = {
             console.log(err)
             return res.status(422).json( response.error('Failed to transfer chat') )
         })  
-    }
+    },
+    allChatOperator : (req, res) => {
+        Chat.countDocuments({ 
+            active_operator : req.body.operator
+        })
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('chat successfully count', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to transfer chat') )
+        }) 
+    },
+    allChat : (req, res) => {
+        Chat.countDocuments()
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('chat successfully count', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to transfer chat') )
+        }) 
+    },
+    allChatOpenOperator : (req, res) => {
+        Chat.countDocuments({ 
+            website : req.body.website,
+            is_open : true,
+            active_operator : null
+        })
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('chat successfully count', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to transfer chat') )
+        }) 
+    },
+    allChatOpen : (req, res) => {
+        Chat.countDocuments({ 
+            is_open : true,
+            active_operator : null
+        })
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('chat successfully count', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to transfer chat') )
+        }) 
+    },
+    allChatActiveOperator : (req, res) => {
+        Chat.countDocuments({ 
+            active_operator : req.body.active_operator
+        })
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('chat successfully count', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to transfer chat') )
+        }) 
+    },
+    allChatActive : (req, res) => {
+        Chat.countDocuments({ 
+            active_operator : { $ne: null }
+        })
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('chat successfully count', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to transfer chat') )
+        }) 
+    },
 }

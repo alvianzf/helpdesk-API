@@ -17,5 +17,11 @@ router.post('/attach/guest', upload.single('attach'), controller.sendImageAsGues
 router.post('/attach/operator', upload.single('attach'), controller.sendImageAsOperator)
 router.post('/close', controller.endChatById)
 router.post('/transfer', controller.transferChatById)
+router.post('/count/chatoperator', controller.allChatOperator)
+router.get('/count/chat', controller.allChat)
+router.post('/count/chatopenoperator', controller.allChatOpenOperator)
+router.get('/count/chatopen', controller.allChatOpen)
+router.post('/count/chatactiveoperator', controller.allChatActiveOperator)
+router.get('/count/chatactive', controller.allChatActive)
 
 module.exports = router
