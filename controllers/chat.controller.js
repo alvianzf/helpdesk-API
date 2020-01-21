@@ -362,4 +362,31 @@ module.exports = {
             return res.status(422).json( response.error('Failed to transfer chat') )
         }) 
     },
+    allChatCloseOperator : (req, res) => {
+        Chat.countDocuments({ 
+            active_operator : req.body.operator,
+            is_open : false
+        })
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('chat successfully count', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to transfer chat') )
+        }) 
+    },
+    allChatClose : (req, res) => {
+        Chat.countDocuments({ 
+            is_open : false
+        })
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('chat successfully count', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to transfer chat') )
+        }) 
+    }
 }

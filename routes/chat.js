@@ -23,5 +23,7 @@ router.post('/count/chatopenoperator', controller.allChatOpenOperator)
 router.get('/count/chatopen', controller.allChatOpen)
 router.post('/count/chatactiveoperator', controller.allChatActiveOperator)
 router.get('/count/chatactive', controller.allChatActive)
+router.post('/count/chatcloseoperator', controller.allChatCloseOperator)
+router.get('/count/chatclose', controller.allChatClose)
 
 module.exports = router
