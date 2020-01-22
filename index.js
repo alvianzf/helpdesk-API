@@ -57,6 +57,22 @@ mongoose.connect(process.env.DB_URL, {
                 io.emit('list_new_chat_for_admin', { data: [] })
             }
         })
+
+        socket.on('retrive_new_message', async function(data) {
+            console.log('new message')
+            try {
+                const list = await Chat.findById(data.id)
+                .populate({ path: 'website' })
+                .populate({ path: 'message' })
+                .populate({ path: 'active_operator' })
+                .populate({ path: 'recent_operator' })
+                .select('-__v')
+                console.log(list)
+                io.emit('list_new_message', { data: list })
+            } catch (error) {
+                io.emit('list_new_message', { data: [] })
+            }
+        })
         // socket.on("get_list_chat_unoperator", async function(data) {
         //     try {
         //         const list = await Chat.find({ website : data.website, active_operator : null})  
