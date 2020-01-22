@@ -56,6 +56,20 @@ module.exports = {
             return res.status(422).json( response.error('Failed to update user') )
         })
     },
+    pathEdit: function(req, res, next) {
+        Model.findByIdAndUpdate(req.body.id, {
+            name : req.body.name,
+            phone : req.body.phone
+        })
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('User successfully updated', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to update user') )
+        })
+    },
     adminList: function(req, res, next) {
         Model.find({ role : 'administrator'}).populate({ path: 'website' }).select('-__v')
         .then((data) => {
