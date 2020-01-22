@@ -38,15 +38,33 @@ mongoose.connect(process.env.DB_URL, {
 
     io.on("connection", function(socket){
         console.log("Socket Connection Established with ID :"+ socket.id)
-
-        socket.on("get_list_chat_unoperator", async function(data) {
+        socket.on('new_chat_for_operator', async function(data) {
+            console.log('have new chat on operator')
             try {
                 const list = await Chat.find({ website : data.website, active_operator : null})  
-                io.emit('unoperator_list_chat', { data: list })
+                io.emit('list_new_chat_for_operator', { data: list })
             } catch (error) {
-                io.emit('unoperator_list_chat', { data: [] })
+                io.emit('list_new_chat_for_operator', { data: [] })
             }
         })
+
+        socket.on('new_chat_for_admin', async function() {
+            console.log('have new chat on admin')
+            try {
+                const list = await Chat.find({active_operator : null})  
+                io.emit('list_new_chat_for_admin', { data: list })
+            } catch (error) {
+                io.emit('list_new_chat_for_admin', { data: [] })
+            }
+        })
+        // socket.on("get_list_chat_unoperator", async function(data) {
+        //     try {
+        //         const list = await Chat.find({ website : data.website, active_operator : null})  
+        //         io.emit('unoperator_list_chat', { data: list })
+        //     } catch (error) {
+        //         io.emit('unoperator_list_chat', { data: [] })
+        //     }
+        // })
     })
 }).catch( (err) => {
     console.log(err);
