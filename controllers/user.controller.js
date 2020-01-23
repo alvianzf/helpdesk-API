@@ -149,5 +149,15 @@ module.exports = {
             console.log(err)
             return res.status(422).json( response.error('Invalid email/password!!!') )
         })
+    },
+    checkToken : function(req, res ) {
+        jwt.verify(req.body.token, req.app.get('secretKey'), (err, decoded) => {
+            if (err) {
+                return res.status(422).json( response.error('Token Invalid!!!') )
+            } else {
+                return res.status(200)
+                .json( response.success('Token Valid', null) )
+            }
+        });
     }
 }
