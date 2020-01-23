@@ -2,6 +2,7 @@ const Model = require('../models/user.model')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const response  = require('../helpers/response')
+const saltRounds = 10
 
 module.exports = {
     get: function(req, res, next) {
@@ -159,5 +160,33 @@ module.exports = {
                 .json( response.success('Token Valid', null) )
             }
         });
+    },
+    changePassword : function(req, res) {
+        Model.findOne({
+            email : req.body.email
+        })
+        .then((data) => {
+            if(bcrypt.compareSync(req.body.old_password, data.password)) {
+                Model.findOneAndUpdate({
+                    email : req.body.email
+                }, {
+                    password : bcrypt.hashSync(req.body.confirm_password, saltRounds)
+                })
+                .then((data) => {
+                    return res.status(200)
+                        .json( response.success('Password succesfully changed', null) )
+                })
+                .catch((err) => {
+                    console.log(err)
+                    return res.status(422).json( response.error('Failed to update password!!!') )
+                })
+            } else {
+                return res.status(422).json( response.error('"Old Password Wrong !!!') )
+            }
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to update password!!!') )
+        })
     }
 }

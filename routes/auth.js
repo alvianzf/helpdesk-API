@@ -14,5 +14,6 @@ router.get('/list/admin', controller.adminList)
 router.get('/list/cso', controller.userList)
 router.post('/list/cso/bywebsite', controller.userListByWebsite)
 router.post('/check/token', controller.checkToken)
+router.post('/change/password', controller.changePassword)
 
 module.exports = router
