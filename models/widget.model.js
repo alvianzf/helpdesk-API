@@ -3,26 +3,26 @@ const mongoose = require('mongoose')
 const WidgetSchema = new mongoose.Schema({
     name: { 
         type: String, 
-        set: v => v ? 'widget name' : v
+        default: 'widget name'
     },
     title : {
         type: String,
-        set: v => v ? 'CS' : v
+        default: 'CS'
     },
     subtitle : {
         type: String,
-        set: v => v ? '24/7 Online' : v
+        default: '24/7 Online'
     },
     logo : {
         type: String
     },
     background_color : {
         type: String,
-        set: v => v ? '#00ffff' : v
+        default: '#00ffff'
     },
     text_color : {
         type: String,
-        set: v => v ? '#009898' : v
+        default: '#009898'
     },
     website : { 
         type: mongoose.Schema.Types.ObjectId,
