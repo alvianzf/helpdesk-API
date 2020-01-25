@@ -84,8 +84,6 @@ module.exports = {
         })
     },
     storeWelcomeText: async (req, res) => {
-
-
         try {
 
             const storeWelcome = await Welcome.create(req.body)
