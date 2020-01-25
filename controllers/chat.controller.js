@@ -338,7 +338,8 @@ module.exports = {
     },
     allChatActiveOperator : (req, res) => {
         Chat.countDocuments({ 
-            active_operator : req.body.active_operator
+            active_operator : req.body.active_operator,
+            is_open : true
         })
         .then((data) => {
             return res.status(200)
@@ -351,7 +352,8 @@ module.exports = {
     },
     allChatActive : (req, res) => {
         Chat.countDocuments({ 
-            active_operator : { $ne: null }
+            active_operator : { $ne: null },
+            is_open : true
         })
         .then((data) => {
             return res.status(200)
