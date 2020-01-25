@@ -73,6 +73,21 @@ mongoose.connect(process.env.DB_URL, {
                 io.emit('list_new_message', { data: [] })
             }
         })
+        socket.on('close_chat', async function(data) {
+            console.log('chat closed')
+            try {
+                const list = await Chat.findById(data.id)
+                .populate({ path: 'website' })
+                .populate({ path: 'message' })
+                .populate({ path: 'active_operator' })
+                .populate({ path: 'recent_operator' })
+                .select('-__v')
+
+                io.emit('closed_chat', { data: list })
+            } catch (error) {
+                io.emit('closed_chat', { data: [] })
+            }
+        })
         // socket.on("get_list_chat_unoperator", async function(data) {
         //     try {
         //         const list = await Chat.find({ website : data.website, active_operator : null})  
