@@ -82,5 +82,27 @@ module.exports = {
             console.log(err)
             return res.status(422).json( response.error('Failed to update splash screen widget') )
         })
+    },
+    storeWelcomeText: async (req, res) => {
+
+
+        try {
+
+            const storeWelcome = await Welcome.create(req.body)
+
+            const widgeExis = await Model.findOne({ _id : req.body.id })
+            if (widgeExis) {
+                await widgeExis.welcome_text.push(storeWelcome._id)
+                const storeWidget = await widgeExis.save()
+
+                return res.status(201).json( response.success('Welcome Message Succesfully Delete', storeWidget) )
+            }
+
+            return res.status(400).json( response.error('Widget Not Found', null) )
+
+        } catch (error) {
+            console.log(error)
+            return res.status(422).json( response.error('Failed to save welcome message') )
+        }
     }
 }

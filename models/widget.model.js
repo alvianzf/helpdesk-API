@@ -28,10 +28,10 @@ const WidgetSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Website'
     },
-    welcome_text : {
+    welcome_text : [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Welcome'
-    },
+    }],
     splashscreen : {
         type : String
     },
