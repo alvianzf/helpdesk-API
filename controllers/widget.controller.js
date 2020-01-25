@@ -107,7 +107,7 @@ module.exports = {
         }
     },
     removeWelcomeText: (req, res) => {
-        Welcome.findByIdAndRemove(req.body.id)
+        Welcome.findByIdAndRemove({ _id : req.body.widget_id})
         .then(() => {
             return res.status(200)
                 .json( response.success('welcome text successfully deleted', null) )
