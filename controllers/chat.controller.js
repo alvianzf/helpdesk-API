@@ -388,5 +388,19 @@ module.exports = {
             console.log(err)
             return res.status(422).json( response.error('Failed to transfer chat') )
         }) 
+    },
+    countUnreadMessageById : (req, res) => {
+        Chat.findById(req.body.id)
+            .populate({ path: 'message' })
+            .select('-__v')
+        .then((data) => {
+            const count = data.message.filter((v) => v.is_read == false)
+            return res.status(200)
+                .json( response.success('chat successfully received', count.length) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to get chat') )
+        })  
     }
 }

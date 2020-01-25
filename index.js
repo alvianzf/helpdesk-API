@@ -41,7 +41,7 @@ mongoose.connect(process.env.DB_URL, {
         socket.on('new_chat_for_operator', async function(data) {
             console.log('have new chat on operator')
             try {
-                const list = await Chat.find({ website : data.website, active_operator : null})  
+                const list = await Chat.find({ website : data.website, active_operator : null, is_open : true})  
                 io.emit('list_new_chat_for_operator', { data: list })
             } catch (error) {
                 io.emit('list_new_chat_for_operator', { data: [] })
@@ -51,7 +51,7 @@ mongoose.connect(process.env.DB_URL, {
         socket.on('new_chat_for_admin', async function() {
             console.log('have new chat on admin')
             try {
-                const list = await Chat.find({active_operator : null})  
+                const list = await Chat.find({active_operator : null, is_open : true})  
                 io.emit('list_new_chat_for_admin', { data: list })
             } catch (error) {
                 io.emit('list_new_chat_for_admin', { data: [] })
@@ -88,14 +88,33 @@ mongoose.connect(process.env.DB_URL, {
                 io.emit('closed_chat', { data: [] })
             }
         })
-        // socket.on("get_list_chat_unoperator", async function(data) {
-        //     try {
-        //         const list = await Chat.find({ website : data.website, active_operator : null})  
-        //         io.emit('unoperator_list_chat', { data: list })
-        //     } catch (error) {
-        //         io.emit('unoperator_list_chat', { data: [] })
-        //     }
-        // })
+        socket.on("get_list_chat_current", async function(data) {
+            try {
+                const list = await Chat.find({ $or:[
+                    { website : data.website, is_open : true, active_operator : null},
+                    { website : data.website, is_open : true, active_operator : data.operator},
+                ] })  
+                io.emit('list_chat_with_operator', { data: list })
+            } catch (error) {
+                io.emit('list_chat_with_operator', { data: [] })
+            }
+        })
+        socket.on("get_list_close_chat_with_operator", async function(data) {
+            try {
+                const list = await Chat.find({ website : data.website, is_open : false })  
+                io.emit('list_close_chat_with_operator', { data: list })
+            } catch (error) {
+                io.emit('list_close_chat_with_operator', { data: [] })
+            }
+        })
+        socket.on("get_list_close_chat", async function(data) {
+            try {
+                const list = await Chat.find({ is_open : false })  
+                io.emit('list_close_chat', { data: list })
+            } catch (error) {
+                io.emit('list_close_chat', { data: [] })
+            }
+        })
     })
 }).catch( (err) => {
     console.log(err);
