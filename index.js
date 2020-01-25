@@ -88,12 +88,21 @@ mongoose.connect(process.env.DB_URL, {
                 io.emit('closed_chat', { data: [] })
             }
         })
-        socket.on("get_list_chat_current", async function(data) {
+        socket.on("get_list_chat_current_for_admin", async function(data) {
+            console.log(data)
             try {
-                const list = await Chat.find({ $or:[
-                    { website : data.website, is_open : true, active_operator : null},
-                    { website : data.website, is_open : true, active_operator : data.operator},
-                ] })  
+                const list = await Chat.find({is_open : true, active_operator : { $ne : null}})  
+                console.log(list)
+                io.emit('list_chat_with_operator_for_admin', { data: list })
+            } catch (error) {
+                io.emit('list_chat_with_operator_for_admin', { data: [] })
+            }
+        })
+        socket.on("get_list_chat_current", async function(data) {
+            console.log(data)
+            try {
+                const list = await Chat.find({ website : data.website, is_open : true, active_operator : data.operator})  
+                console.log(list)
                 io.emit('list_chat_with_operator', { data: list })
             } catch (error) {
                 io.emit('list_chat_with_operator', { data: [] })
