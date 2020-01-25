@@ -8,4 +8,6 @@ router.post('/create', controller.create)
 router.post('/update', upload.single('logo'), controller.update)
 router.post('/manage-splash-screen', upload.single('attach'), controller.manageSplashScreen)
 router.post('/store/welcome-message', controller.storeWelcomeText)
+router.delete('/delete/welcome-message', controller.removeWelcomeText)
+
 module.exports = router

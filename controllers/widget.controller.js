@@ -102,5 +102,16 @@ module.exports = {
             console.log(error)
             return res.status(422).json( response.error('Failed to save welcome message') )
         }
+    },
+    removeWelcomeText: (req, res) => {
+        Welcome.findByIdAndRemove(req.body.id)
+        .then(() => {
+            return res.status(200)
+                .json( response.success('welcome text successfully deleted', null) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to delete welcome text') )
+        })
     }
 }
