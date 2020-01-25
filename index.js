@@ -186,7 +186,8 @@ mongoose.connect(process.env.DB_URL, {
         })
         socket.on("get_list_close_chat_with_operator", async function(data) {
             try {
-                const list = await Chat.find({ website : data.website, is_open : false })  
+                const list = await Chat.find({ website : data.website, is_open : false })
+                .populate({ path : 'active_operator'})  
                 io.emit('list_close_chat_with_operator', { data: list })
             } catch (error) {
                 io.emit('list_close_chat_with_operator', { data: [] })
@@ -195,6 +196,7 @@ mongoose.connect(process.env.DB_URL, {
         socket.on("get_list_close_chat", async function(data) {
             try {
                 const list = await Chat.find({ is_open : false })  
+                .populate({ path : 'active_operator'})  
                 io.emit('list_close_chat', { data: list })
             } catch (error) {
                 io.emit('list_close_chat', { data: [] })
