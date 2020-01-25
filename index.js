@@ -57,6 +57,56 @@ mongoose.connect(process.env.DB_URL, {
             }
         })
 
+        socket.on('waiting_new_chat_on_operator', async function(data) {
+            try {
+                const list = await Chat.find({ website : data.website, is_open : true})  
+                .populate({ path : 'message'})  
+                const arr = []
+                list.forEach( v => {
+                    arr.push({
+                        recent_operator: v.recent_operator,
+                        message: v.message,
+                        is_open: v.is_open,
+                        _id: v._id,
+                        ticket_id: v.ticket_id,
+                        website: v.website,
+                        createdAt: v.createdAt,
+                        updatedAt: v.updatedAt,
+                        active_operator: v.active_operator,
+                        unreadtotal : v.message.filter(v => v.is_read == false).length
+                    })
+                })
+                io.emit('list_chat_on_operator', { data: arr })
+            } catch (error) {
+                io.emit('list_chat_on_operator', { data: [] })
+            }
+        })
+
+        socket.on('waiting_new_chat_on_admin', async function() {
+            try {
+                const list = await Chat.find({is_open : true})  
+                .populate({ path : 'message'})  
+                const arr = []
+                list.forEach( v => {
+                    arr.push({
+                        recent_operator: v.recent_operator,
+                        message: v.message,
+                        is_open: v.is_open,
+                        _id: v._id,
+                        ticket_id: v.ticket_id,
+                        website: v.website,
+                        createdAt: v.createdAt,
+                        updatedAt: v.updatedAt,
+                        active_operator: v.active_operator,
+                        unreadtotal : v.message.filter(v => v.is_read == false).length
+                    })
+                })
+                io.emit('list_chat_on_admin', { data: arr })
+            } catch (error) {
+                io.emit('list_chat_on_admin', { data: [] })
+            }
+        })
+
         socket.on('retrive_new_message', async function(data) {
             try {
                 const list = await Chat.findById(data.id)
