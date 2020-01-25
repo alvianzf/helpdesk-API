@@ -5,7 +5,6 @@ const welcomeSchema = new mongoose.Schema({
         type: String 
     },
 }, { 
-    collection : 'welcomes',
     timestamps : true
 })
 

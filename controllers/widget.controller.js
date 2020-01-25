@@ -4,7 +4,7 @@ const Model = require('../models/widget.model'),
 
 module.exports = {
     get: function(req, res, next) {
-        Model.find()
+        Model.find().populate({ path: 'website'}).select('-__v')
         .then((data) => {
             return res.status(200)
                 .json( response.success('widget successfully received', data) )
@@ -84,14 +84,19 @@ module.exports = {
         })
     },
     storeWelcomeText: async (req, res) => {
+        const { message } = req.body
         try {
 
-            const storeWelcome = await Welcome.create(req.body)
+            const newWelcome = new Welcome({
+                message
+            })
 
-            const widgeExis = await Model.findOne({ _id : req.body.id })
-            if (widgeExis) {
-                await widgeExis.welcome_text.push(storeWelcome._id)
-                const storeWidget = await widgeExis.save()
+            const storeWelcome = await newWelcome.save()
+
+            const widgetExis = await Model.findOne({ _id : req.body.id })
+            if (widgetExis) {
+                await widgetExis.welcome_text.push(storeWelcome._id)
+                const storeWidget = await widgetExis.save()
 
                 return res.status(201).json( response.success('Welcome Message Succesfully Delete', storeWidget) )
             }
@@ -112,6 +117,19 @@ module.exports = {
         .catch((err) => {
             console.log(err)
             return res.status(422).json( response.error('Failed to delete welcome text') )
+        })
+    },
+    find: (req, res) => {
+        Model.findById(req.body.id)
+        .populate({ path: 'website'})
+        .populate({ path: 'welcome_text'}).select('-__v')
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('widget received successfully', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to get widget') )
         })
     }
 }
