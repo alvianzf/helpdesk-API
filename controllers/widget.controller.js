@@ -59,5 +59,28 @@ module.exports = {
             console.log(err)
             return res.status(422).json( response.error('Failed to update widget') )
         })
+    },
+    manageSplashScreen : async (req, res) => {
+        const file = req.file
+
+        if (!file) {
+            return res.status(415).json( response.error('File is not supported') )
+        } else if (file.size > 5000000) {
+            await fs.unlinkSync(file.path)
+            return res.status(413).json( response.error('File size too large') )
+        }
+
+        await Model.findByIdAndUpdate(req.body.id, {
+            splashscreen : file.filename,
+            splashscreenduration : req.body.duration
+        })
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('Widget splashscreen successfully updated', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to update splash screen widget') )
+        })
     }
 }
