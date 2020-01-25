@@ -49,7 +49,6 @@ mongoose.connect(process.env.DB_URL, {
         })
 
         socket.on('new_chat_for_admin', async function() {
-            console.log('have new chat on admin')
             try {
                 const list = await Chat.find({active_operator : null, is_open : true})  
                 io.emit('list_new_chat_for_admin', { data: list })
@@ -59,7 +58,6 @@ mongoose.connect(process.env.DB_URL, {
         })
 
         socket.on('retrive_new_message', async function(data) {
-            console.log('new message')
             try {
                 const list = await Chat.findById(data.id)
                 .populate({ path: 'website' })
@@ -67,14 +65,13 @@ mongoose.connect(process.env.DB_URL, {
                 .populate({ path: 'active_operator' })
                 .populate({ path: 'recent_operator' })
                 .select('-__v')
-                console.log(list)
+
                 io.emit('list_new_message', { data: list })
             } catch (error) {
                 io.emit('list_new_message', { data: [] })
             }
         })
         socket.on('close_chat', async function(data) {
-            console.log('chat closed')
             try {
                 const list = await Chat.findById(data.id)
                 .populate({ path: 'website' })
@@ -89,21 +86,50 @@ mongoose.connect(process.env.DB_URL, {
             }
         })
         socket.on("get_list_chat_current_for_admin", async function(data) {
-            console.log(data)
             try {
-                const list = await Chat.find({is_open : true, active_operator : { $ne : null}})  
-                console.log(list)
-                io.emit('list_chat_with_operator_for_admin', { data: list })
+                const list = await Chat.find({is_open : true, active_operator : { $ne : null}})
+                    .populate({ path : 'message'})  
+                const arr = []
+                list.forEach( v => {
+                    arr.push({
+                        recent_operator: v.recent_operator,
+                        message: v.message,
+                        is_open: v.is_open,
+                        _id: v._id,
+                        ticket_id: v.ticket_id,
+                        website: v.website,
+                        createdAt: v.createdAt,
+                        updatedAt: v.updatedAt,
+                        active_operator: v.active_operator,
+                        unreadtotal : v.message.filter(v => v.is_read == false).length
+                    })
+                })
+
+                io.emit('list_chat_with_operator_for_admin', { data: arr })
             } catch (error) {
                 io.emit('list_chat_with_operator_for_admin', { data: [] })
             }
         })
         socket.on("get_list_chat_current", async function(data) {
-            console.log(data)
             try {
-                const list = await Chat.find({ website : data.website, is_open : true, active_operator : data.operator})  
-                console.log(list)
-                io.emit('list_chat_with_operator', { data: list })
+                const list = await Chat.find({ website : data.website, is_open : true, active_operator : data.operator})
+                .populate({ path : 'message'})  
+                const arr = []
+                list.forEach( v => {
+                    arr.push({
+                        recent_operator: v.recent_operator,
+                        message: v.message,
+                        is_open: v.is_open,
+                        _id: v._id,
+                        ticket_id: v.ticket_id,
+                        website: v.website,
+                        createdAt: v.createdAt,
+                        updatedAt: v.updatedAt,
+                        active_operator: v.active_operator,
+                        unreadtotal : v.message.filter(v => v.is_read == false).length
+                    })
+                })
+                io.emit('list_chat_with_operator', { data: arr })
             } catch (error) {
                 io.emit('list_chat_with_operator', { data: [] })
             }
