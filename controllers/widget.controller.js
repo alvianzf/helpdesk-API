@@ -36,9 +36,7 @@ module.exports = {
     update : async (req, res, next) => {
         const file = req.file
 
-        if (!file) {
-            return res.status(415).json( response.error('File is not supported') )
-        } else if (file.size > 5000000) {
+        if (file && file.size > 5000000) {
             await fs.unlinkSync(file.path)
             return res.status(413).json( response.error('File size too large') )
         }
@@ -49,7 +47,7 @@ module.exports = {
             subtitle : req.body.subtitle,
             background_color : req.body.background_color,
             text_color : req.body.text_color,
-            logo : file.filename
+            logo : file ? file.filename : null
         })
         .then((data) => {
             return res.status(200)
