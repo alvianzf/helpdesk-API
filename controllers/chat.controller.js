@@ -402,5 +402,25 @@ module.exports = {
             console.log(err)
             return res.status(422).json( response.error('Failed to get chat') )
         })  
+    },
+    setRead : async (req, res) => {
+        Chat.findById(req.body.id)
+        .then(async(data) => {
+            await data.message.forEach(v => {
+                Message.findByIdAndUpdate({ _id : v._id},{
+                    is_read : true
+                })
+                .then((data) => {
+                    console.log('updated')
+                })
+            })
+
+            return res.status(200)
+                .json( response.success('chat successfully updated', null) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to get chat') )
+        }) 
     }
 }

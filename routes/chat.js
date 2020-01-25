@@ -26,5 +26,6 @@ router.get('/count/chatactive', controller.allChatActive)
 router.post('/count/chatcloseoperator', controller.allChatCloseOperator)
 router.get('/count/chatclose', controller.allChatClose)
 router.post('/count/unread', controller.countUnreadMessageById)
+router.post('/setread', controller.setRead)
 
 module.exports = router
