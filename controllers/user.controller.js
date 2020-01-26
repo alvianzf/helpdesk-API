@@ -43,18 +43,35 @@ module.exports = {
         })
     },
     patch: function(req, res, next) {
-        Model.findByIdAndUpdate(req.body.id, {
-            name : req.body.name,
-            username : req.body.username
-        })
-        .then((data) => {
-            return res.status(200)
-                .json( response.success('User successfully updated', data) )
-        })
-        .catch((err) => {
-            console.log(err)
-            return res.status(422).json( response.error('Failed to update user') )
-        })
+        if(req.body.website) {
+            Model.findByIdAndUpdate(req.body.id, {
+                name : req.body.name,
+                username : req.body.username,
+                website : req.body.website
+            })
+            .then((data) => {
+                return res.status(200)
+                    .json( response.success('User successfully updated', data) )
+            })
+            .catch((err) => {
+                console.log(err)
+                return res.status(422).json( response.error('Failed to update user') )
+            })
+        }else {
+            Model.findByIdAndUpdate(req.body.id, {
+                name : req.body.name,
+                username : req.body.username
+            })
+            .then((data) => {
+                return res.status(200)
+                    .json( response.success('User successfully updated', data) )
+            })
+            .catch((err) => {
+                console.log(err)
+                return res.status(422).json( response.error('Failed to update user') )
+            })
+        }
+        
     },
     pathEdit: function(req, res, next) {
         Model.findByIdAndUpdate(req.body.id, {
