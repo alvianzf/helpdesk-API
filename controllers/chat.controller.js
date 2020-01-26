@@ -424,5 +424,54 @@ module.exports = {
             console.log(err)
             return res.status(422).json( response.error('Failed to get chat') )
         }) 
+    },
+    totalChatPerAgent : (req,res)=> {
+        Chat.aggregate([
+            {
+                $group: {
+                    _id : "$active_operator",
+                    count : { $sum : 1}
+                }
+            },
+            {
+                $project: {
+                    _id : "$_id",
+                    operator : "$_id",
+                    total_count : "$count"
+                }
+            }
+        ]).exec((err, result) => {
+            if(err) {
+                console.log(err)
+                return res.status(422).json( response.error('Failed to get chat') )
+            } else {
+                // return res.status(200)
+                //             .json( response.success('chat successfully updated', result) )
+                User.populate(
+                    result, {
+                        path : "operator",
+                        select : "name"
+                    },
+                    (err, populatedResult) => {
+                        if(err) {
+                            console.log(err)
+                            return res.status(422).json( response.error('Failed to get chat') )
+                        } else {
+                            var set = []
+                            set.push(["operator name","total count"])
+                            populatedResult.map(key => {
+                                let check = [key._id ? key.operator.name : "not served", key.total_count]
+                                set.push(check)
+                                return set
+                            })
+                            return res.status(200)
+                            .json( response.success('chat successfully updated', set) )
+                        }
+                    }
+                )
+                
+            }
+        })
+
     }
 }
