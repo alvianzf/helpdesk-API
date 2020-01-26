@@ -10,7 +10,7 @@ exports.success = (message, data, code = 200, version = '1.0') => {
 
 exports.error = (message, code = 400, version = '1.0') => {
     return ({
-        success: true,
+        success: false,
         message: message,
         data: null,
         code: code,

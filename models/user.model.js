@@ -1,26 +1,21 @@
 const mongoose = require('mongoose')
     bcrypt = require('bcrypt')
     saltRounds = 10
-    uniqueValidator = require('mongoose-unique-validator')
     
 const UserSchema = new mongoose.Schema({
-    email: { 
+    username: { 
         type: String, 
-        required: [true, `Email it's required`],
-        unique : true
+        required: [true, `Username it's required`]
     },
     password : {
         type: String, 
-        required: [true, `Password it's required`],
-        unique : true
+        required: [true, `Password it's required`]
     },
     name: { 
         type: String, 
-        required: [true, `Name it's required`]
-    },
-    phone : { 
-        type: String, 
-        required: [true, `Phone it's required`]
+        required: [true, `Name it's required`],
+        set : v => v ? v.toLowerCase() : null,
+        get: v => v ? ucwords(v) : null
     },
     role : { 
         type: String, 
@@ -30,7 +25,7 @@ const UserSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Website'
     },
-    is_serving : { type : Boolean , default : false}
+    is_online : { type : Boolean , default : false}
 },{
     timestamps : true
 })
@@ -47,7 +42,7 @@ function ucwords(str) {
         return s.toUpperCase();
     });
 }
-UserSchema.plugin(uniqueValidator, { message: 'Error, expected {PATH} to be unique.' })
+
 const User = mongoose.model('User', UserSchema)
 
 module.exports = User

@@ -45,8 +45,7 @@ module.exports = {
     patch: function(req, res, next) {
         Model.findByIdAndUpdate(req.body.id, {
             name : req.body.name,
-            email : req.body.email,
-            phone : req.body.phone
+            username : req.body.username
         })
         .then((data) => {
             return res.status(200)
@@ -69,6 +68,17 @@ module.exports = {
         .catch((err) => {
             console.log(err)
             return res.status(422).json( response.error('Failed to update user') )
+        })
+    },
+    superAdminList: function(req, res,next) {
+        Model.find({ role : 'super admin'}).select('-__v')
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('Admin successfully received', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to get admin') )
         })
     },
     adminList: function(req, res, next) {
@@ -97,58 +107,69 @@ module.exports = {
         Model.find({ role : 'customer service', website : req.body.website }).populate({ path: 'website' }).select('-__v')
         .then((data) => {
             return res.status(200)
-                .json( response.success('Customer service successfully received', data) )
+                .json( response.success('User successfully received', data) )
         })
         .catch((err) => {
             console.log(err)
-            return res.status(422).json( response.error('Failed to get customer service') )
+            return res.status(422).json( response.error('Failed to get user') )
         })
     },
     create: function(req, res, next) {
-        const user = new Model({
-            email : req.body.email,
-            password : req.body.password,
-            name : req.body.name,
-            phone : req.body.phone,
-            role : req.body.role,
-            website : req.body.website ? req.body.website : null
+        Model.findOne({
+            username : req.body.username
         })
-        user.save()
         .then((data) => {
-            return res.status(200)
-                .json( response.success('User successfully created', null) )
-        })
-        .catch((err) => {
+            if(data) {
+
+                return res.status(422).json( response.error('Username Already Used') )
+            } else {
+                const user = new Model({
+                    username : req.body.username,
+                    password : req.body.password,
+                    name : req.body.name,
+                    role : req.body.role,
+                    website : req.body.website ? req.body.website : null
+                })
+                user.save()
+                .then((data) => {
+                    return res.status(200)
+                        .json( response.success('User successfully created', null) )
+                })
+                .catch((err) => {
+                    console.log(err)
+                    return res.status(422).json( response.error('Failed to create user') )
+                })
+            }
+        }).catch((err) => {
             console.log(err)
             return res.status(422).json( response.error('Failed to create user') )
         })
+        
     },
     authenticate: function(req, res, next) {
         Model.findOne({
-            email : req.body.email
+            username : req.body.username
         })
         .then((data) => {
             if(bcrypt.compareSync(req.body.password, data.password)) {
-                const token = jwt.sign({id: data._id}, req.app.get('secretKey'), { expiresIn: '2h' });
+                const token = jwt.sign({id: data._id}, req.app.get('secretKey'), { expiresIn: '4h' });
                 return res.status(200)
                     .json( response.success('User successfully logined', 
                         { 
                             token: token,
-                            email : data.email,
+                            username : data.username,
                             role : data.role,
                             name : data.name,
-                            phone : data.phone,
                             id : data._id,
                             website : data.website
                         }
                     ))
             } else {
-                return res.status(422).json( response.error('"Invalid email/password!!!') )
+                return res.status(422).json( response.error('"Invalid username/password!!!') )
             }
         })
         .catch((err) => {
-            console.log(err)
-            return res.status(422).json( response.error('Invalid email/password!!!') )
+            return res.status(422).json( response.error('Invalid username/password!!!') )
         })
     },
     checkToken : function(req, res ) {
@@ -163,12 +184,12 @@ module.exports = {
     },
     changePassword : function(req, res) {
         Model.findOne({
-            email : req.body.email
+            username : req.body.username
         })
         .then((data) => {
             if(bcrypt.compareSync(req.body.old_password, data.password)) {
                 Model.findOneAndUpdate({
-                    email : req.body.email
+                    username : req.body.username
                 }, {
                     password : bcrypt.hashSync(req.body.confirm_password, saltRounds)
                 })
