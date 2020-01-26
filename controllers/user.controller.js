@@ -70,37 +70,31 @@ module.exports = {
             return res.status(422).json( response.error('Failed to update user') )
         })
     },
-    superAdminList: function(req, res,next) {
-        Model.find({ role : 'super admin'}).select('-__v')
+    listAsRole : function(req, res, next) {
+        Model.find({ role : req.body.role})
+        .populate({ path: 'website' }).select('-__v')
         .then((data) => {
             return res.status(200)
-                .json( response.success('Admin successfully received', data) )
+                .json( response.success('User successfully received', data) )
         })
         .catch((err) => {
             console.log(err)
-            return res.status(422).json( response.error('Failed to get admin') )
+            return res.status(422).json( response.error('Failed to get user') )
         })
     },
-    adminList: function(req, res, next) {
-        Model.find({ role : 'administrator'}).populate({ path: 'website' }).select('-__v')
+    listAsRoleAsWeb : function(req, res, next) {
+        Model.find({ 
+            role : req.body.role,
+            website : req.body.website
+        })
+        .populate({ path: 'website' }).select('-__v')
         .then((data) => {
             return res.status(200)
-                .json( response.success('Admin successfully received', data) )
+                .json( response.success('User successfully received', data) )
         })
         .catch((err) => {
             console.log(err)
-            return res.status(422).json( response.error('Failed to get admin') )
-        })
-    },
-    userList: function(req, res, next) {
-        Model.find({ role : 'customer service'}).populate({ path: 'website' }).select('-__v')
-        .then((data) => {
-            return res.status(200)
-                .json( response.success('Customer service successfully received', data) )
-        })
-        .catch((err) => {
-            console.log(err)
-            return res.status(422).json( response.error('Failed to get customer service') )
+            return res.status(422).json( response.error('Failed to get user') )
         })
     },
     userListByWebsite : function(req, res, next) {
