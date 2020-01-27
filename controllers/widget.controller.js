@@ -35,51 +35,81 @@ module.exports = {
     },
     update : async (req, res, next) => {
         const file = req.file
-
-        if (file && file.size > 5000000) {
-            await fs.unlinkSync(file.path)
-            return res.status(413).json( response.error('File size too large') )
+        if(file) {
+            if (file && file.size > 5000000) {
+                await fs.unlinkSync(file.path)
+                return res.status(413).json( response.error('File size too large') )
+            }
+    
+            await Model.findByIdAndUpdate(req.body.id, {
+                name : req.body.name,
+                title : req.body.title,
+                subtitle : req.body.subtitle,
+                background_color : req.body.background_color,
+                text_color : req.body.text_color,
+                logo : file.filename
+            })
+            .then((data) => {
+                return res.status(200)
+                    .json( response.success('Widget successfully updated', data) )
+            })
+            .catch((err) => {
+                console.log(err)
+                return res.status(422).json( response.error('Failed to update widget') )
+            })
+        } else {
+            await Model.findByIdAndUpdate(req.body.id, {
+                name : req.body.name,
+                title : req.body.title,
+                subtitle : req.body.subtitle,
+                background_color : req.body.background_color,
+                text_color : req.body.text_color
+            })
+            .then((data) => {
+                return res.status(200)
+                    .json( response.success('Widget successfully updated', data) )
+            })
+            .catch((err) => {
+                console.log(err)
+                return res.status(422).json( response.error('Failed to update widget') )
+            })
         }
-
-        await Model.findByIdAndUpdate(req.body.id, {
-            name : req.body.name,
-            title : req.body.title,
-            subtitle : req.body.subtitle,
-            background_color : req.body.background_color,
-            text_color : req.body.text_color,
-            logo : file ? file.filename : null
-        })
-        .then((data) => {
-            return res.status(200)
-                .json( response.success('Widget successfully updated', data) )
-        })
-        .catch((err) => {
-            console.log(err)
-            return res.status(422).json( response.error('Failed to update widget') )
-        })
+        
     },
     manageSplashScreen : async (req, res) => {
         const file = req.file
+        if(file) {
+            if (file.size > 5000000) {
+                await fs.unlinkSync(file.path)
+                return res.status(413).json( response.error('File size too large') )
+            }
 
-        if (!file) {
-            return res.status(415).json( response.error('File is not supported') )
-        } else if (file.size > 5000000) {
-            await fs.unlinkSync(file.path)
-            return res.status(413).json( response.error('File size too large') )
+            await Model.findByIdAndUpdate(req.body.id, {
+                splashscreen : file.filename,
+                splashscreenduration : req.body.duration
+            })
+            .then((data) => {
+                return res.status(200)
+                    .json( response.success('Widget splashscreen successfully updated', data) )
+            })
+            .catch((err) => {
+                console.log(err)
+                return res.status(422).json( response.error('Failed to update splash screen widget') )
+            })
+        } else {
+            await Model.findByIdAndUpdate(req.body.id, {
+                splashscreenduration : req.body.duration
+            })
+            .then((data) => {
+                return res.status(200)
+                    .json( response.success('Widget splashscreen successfully updated', data) )
+            })
+            .catch((err) => {
+                console.log(err)
+                return res.status(422).json( response.error('Failed to update splash screen widget') )
+            })
         }
-
-        await Model.findByIdAndUpdate(req.body.id, {
-            splashscreen : file.filename,
-            splashscreenduration : req.body.duration
-        })
-        .then((data) => {
-            return res.status(200)
-                .json( response.success('Widget splashscreen successfully updated', data) )
-        })
-        .catch((err) => {
-            console.log(err)
-            return res.status(422).json( response.error('Failed to update splash screen widget') )
-        })
+        
     },
     storeWelcomeText: async (req, res) => {
         const { message } = req.body
