@@ -6,6 +6,7 @@ const messageSchema = new mongoose.Schema({
     is_read: { type: Boolean, default: false },
     is_guest : { type: Boolean, default : true },
     is_operator : { type: Boolean, default : false },
+    is_system : { type: Boolean, default : false},
     operator : { 
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'

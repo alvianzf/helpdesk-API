@@ -169,6 +169,31 @@ mongoose.connect(process.env.DB_URL, {
             }
         })
 
+        // get message
+        socket.on('send_message', async function(data) {
+            Chat.findById({_id : data.id}).populate({ path : 'message'})  
+            .then((res) => {
+                io.emit('get_message', { data: res })
+            })
+            .catch((err) => {
+                console.log(err)
+                io.emit('get_message', { data : null})
+            })
+        })
+
+        // end get message
+
+        socket.on('assigned_operator', function(data) {
+            Chat.findById({ _id : data.id}).populate({ path : 'active_operator'})  
+            .then((res) => {
+                io.emit('get_current_operator', { data: res.active_operator.name })
+            })
+            .catch((err) => {
+                console.log(err)
+                io.emit('get_current_operator', { data : null})
+            })
+        })
+
     })
 }).catch( (err) => {
     console.log(err);

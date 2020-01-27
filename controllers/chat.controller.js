@@ -146,6 +146,33 @@ module.exports = {
             return res.status(422).json( response.error('Failed to send message') )
         }
     },
+    sendNewMessageAsSystem : async (req, res) => {
+        const { message } = req.body
+        console.log(req.body)
+        try {
+            const newMessage = new Message({
+                message,
+                is_guest : false,
+                is_operator : false,
+                is_system : true
+            })
+
+            const chatExist = await Chat.findOne({ _id : req.body.id })
+            console.log(chatExist)
+            if (chatExist) {
+                const storeMessage = await newMessage.save()
+                await chatExist.message.push(storeMessage._id)
+                const storeChat = await chatExist.save()
+
+                return res.status(201).json( response.success('Message successfully sent', storeChat) )
+            }
+
+            return res.status(201).json( response.error('Channel Not Found', null) )
+
+        } catch (error) {
+            return res.status(422).json( response.error('Failed to send message') )
+        }
+    },
     sendNewMessageAsGuest : async (req, res) => {
         const { message } = req.body
 
@@ -181,7 +208,13 @@ module.exports = {
                 })
                 return res.status(201).json( response.success('Chat successfully assigned', assignOperator) )
             } else {
-                return res.status(201).json( response.success('already have operator', null) )
+                return res.json({
+                    success: true,
+                    message: 'already have operator',
+                    data: null,
+                    code: 443,
+                    version: 1 
+                })
             }
 
         } catch (error) {
@@ -260,7 +293,7 @@ module.exports = {
     endChatById : async (req, res) => {
         Chat.findByIdAndUpdate({ _id : req.body.id} , {
             is_open : false
-        })
+        }).populate({ path : 'active_operator' })
         .then((data) => {
             return res.status(200)
                 .json( response.success('chat successfully closed', data) )
@@ -273,10 +306,18 @@ module.exports = {
     transferChatById : async (req, res) => {
         Chat.findByIdAndUpdate({ _id : req.body.id} , {
             active_operator : req.body.operator
-        })
+        }).populate({ path : 'active_operator'})
         .then((data) => {
-            return res.status(200)
-                .json( response.success('chat successfully transfered', data) )
+            Chat.findById({ _id : req.body.id}).populate({ path : 'active_operator'})
+            .then((data) => {
+                return res.status(200)
+                    .json( response.success('chat successfully transfered', data) )
+            })
+            .catch((err) => {
+                console.log(err)
+                return res.status(422).json( response.error('Failed to transfer chat') )
+            }) 
+            
         })
         .catch((err) => {
             console.log(err)
