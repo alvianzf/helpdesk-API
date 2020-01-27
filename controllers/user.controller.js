@@ -73,6 +73,20 @@ module.exports = {
         }
         
     },
+    resetPassword: function(req, res, next) {
+        Model.findByIdAndUpdate(req.body.id, {
+            password : bcrypt.hashSync('123456789', saltRounds)
+        })
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('User successfully reseted, password reset to 123456789', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to update user') )
+        })
+        
+    },
     pathEdit: function(req, res, next) {
         Model.findByIdAndUpdate(req.body.id, {
             name : req.body.name,
