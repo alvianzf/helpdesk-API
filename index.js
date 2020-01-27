@@ -37,29 +37,63 @@ mongoose.connect(process.env.DB_URL, {
     let io = socket(server);
 
     io.on("connection", function(socket){
-        console.log("Socket Connection Established with ID :"+ socket.id)
-        socket.on('new_chat_for_operator', async function(data) {
-            console.log('have new chat on operator')
+        // new list chat
+        socket.on('new_list_global', async function(data) {
             try {
-                const list = await Chat.find({ website : data.website, active_operator : null, is_open : true})  
-                io.emit('list_new_chat_for_operator', { data: list })
+                const globalList = await Chat.find({ is_open : true, active_operator : null })
+                .populate({ path : 'message'})  
+                const globalArr = []
+                globalList.forEach( v => {
+                    globalArr.push({
+                        recent_operator: v.recent_operator,
+                        message: v.message,
+                        is_open: v.is_open,
+                        _id: v._id,
+                        ticket_id: v.ticket_id,
+                        website: v.website,
+                        createdAt: v.createdAt,
+                        updatedAt: v.updatedAt,
+                        active_operator: v.active_operator,
+                        unreadtotal : v.message.filter(v => v.is_read == false).length
+                    })
+                })
+                io.emit('get_new_list_global', { data: globalArr })
             } catch (error) {
-                io.emit('list_new_chat_for_operator', { data: [] })
+                io.emit('get_new_list_global', { data : []})
             }
         })
 
-        socket.on('new_chat_for_admin', async function() {
+        socket.on('new_list_group', async function(data) {
             try {
-                const list = await Chat.find({active_operator : null, is_open : true})  
-                io.emit('list_new_chat_for_admin', { data: list })
+                const groupList = await Chat.find({ is_open : true, website : data.website, active_operator : null})
+                .populate({ path : 'message'})  
+                const groupArr = []
+                groupList.forEach( v => {
+                    groupArr.push({
+                        recent_operator: v.recent_operator,
+                        message: v.message,
+                        is_open: v.is_open,
+                        _id: v._id,
+                        ticket_id: v.ticket_id,
+                        website: v.website,
+                        createdAt: v.createdAt,
+                        updatedAt: v.updatedAt,
+                        active_operator: v.active_operator,
+                        unreadtotal : v.message.filter(v => v.is_read == false).length
+                    })
+                })
+                io.emit('get_new_list_group', { data: groupArr })
             } catch (error) {
-                io.emit('list_new_chat_for_admin', { data: [] })
+                io.emit('get_new_list_group', { data : []})
             }
         })
 
-        socket.on('waiting_new_chat_on_operator', async function(data) {
+        // ----- end new list chat
+        
+        // current list chat
+        socket.on('current_list_chat', async function(data) {
             try {
-                const list = await Chat.find({ website : data.website, is_open : true})  
+                const list = await Chat.find({ is_open : true, active_operator : data.active_operator })
                 .populate({ path : 'message'})  
                 const arr = []
                 list.forEach( v => {
@@ -76,19 +110,22 @@ mongoose.connect(process.env.DB_URL, {
                         unreadtotal : v.message.filter(v => v.is_read == false).length
                     })
                 })
-                io.emit('list_chat_on_operator', { data: arr })
+                io.emit('get_current_list', { data: arr })
             } catch (error) {
-                io.emit('list_chat_on_operator', { data: [] })
+                io.emit('get_current_list', { data : []})
             }
         })
 
-        socket.on('waiting_new_chat_on_admin', async function() {
+        // end current list chat ------
+
+        // close list chat
+        socket.on('close_list_global', async function(data) {
             try {
-                const list = await Chat.find({is_open : true})  
+                const globalList = await Chat.find({ is_open : false})
                 .populate({ path : 'message'})  
-                const arr = []
-                list.forEach( v => {
-                    arr.push({
+                const globalArr = []
+                globalList.forEach( v => {
+                    globalArr.push({
                         recent_operator: v.recent_operator,
                         message: v.message,
                         is_open: v.is_open,
@@ -101,72 +138,19 @@ mongoose.connect(process.env.DB_URL, {
                         unreadtotal : v.message.filter(v => v.is_read == false).length
                     })
                 })
-                io.emit('list_chat_on_admin', { data: arr })
+                io.emit('get_close_list_global', { data: globalArr })
             } catch (error) {
-                io.emit('list_chat_on_admin', { data: [] })
+                io.emit('get_close_list_global', { data : []})
             }
         })
 
-        socket.on('retrive_new_message', async function(data) {
+        socket.on('close_list_group', async function(data) {
             try {
-                const list = await Chat.findById(data.id)
-                .populate({ path: 'website' })
-                .populate({ path: 'message' })
-                .populate({ path: 'active_operator' })
-                .populate({ path: 'recent_operator' })
-                .select('-__v')
-
-                io.emit('list_new_message', { data: list })
-            } catch (error) {
-                io.emit('list_new_message', { data: [] })
-            }
-        })
-        socket.on('close_chat', async function(data) {
-            try {
-                const list = await Chat.findById(data.id)
-                .populate({ path: 'website' })
-                .populate({ path: 'message' })
-                .populate({ path: 'active_operator' })
-                .populate({ path: 'recent_operator' })
-                .select('-__v')
-
-                io.emit('closed_chat', { data: list })
-            } catch (error) {
-                io.emit('closed_chat', { data: [] })
-            }
-        })
-        socket.on("get_list_chat_current_for_admin", async function(data) {
-            try {
-                const list = await Chat.find({is_open : true, active_operator : { $ne : null}})
-                    .populate({ path : 'message'})  
-                const arr = []
-                list.forEach( v => {
-                    arr.push({
-                        recent_operator: v.recent_operator,
-                        message: v.message,
-                        is_open: v.is_open,
-                        _id: v._id,
-                        ticket_id: v.ticket_id,
-                        website: v.website,
-                        createdAt: v.createdAt,
-                        updatedAt: v.updatedAt,
-                        active_operator: v.active_operator,
-                        unreadtotal : v.message.filter(v => v.is_read == false).length
-                    })
-                })
-
-                io.emit('list_chat_with_operator_for_admin', { data: arr })
-            } catch (error) {
-                io.emit('list_chat_with_operator_for_admin', { data: [] })
-            }
-        })
-        socket.on("get_list_chat_current", async function(data) {
-            try {
-                const list = await Chat.find({ website : data.website, is_open : true, active_operator : data.operator})
+                const groupList = await Chat.find({ is_open : false, website : data.website})
                 .populate({ path : 'message'})  
-                const arr = []
-                list.forEach( v => {
-                    arr.push({
+                const groupArr = []
+                groupList.forEach( v => {
+                    groupArr.push({
                         recent_operator: v.recent_operator,
                         message: v.message,
                         is_open: v.is_open,
@@ -179,29 +163,12 @@ mongoose.connect(process.env.DB_URL, {
                         unreadtotal : v.message.filter(v => v.is_read == false).length
                     })
                 })
-                io.emit('list_chat_with_operator', { data: arr })
+                io.emit('get_close_list_group', { data: groupArr })
             } catch (error) {
-                io.emit('list_chat_with_operator', { data: [] })
+                io.emit('get_close_list_group', { data : []})
             }
         })
-        socket.on("get_list_close_chat_with_operator", async function(data) {
-            try {
-                const list = await Chat.find({ website : data.website, is_open : false })
-                .populate({ path : 'active_operator'})  
-                io.emit('list_close_chat_with_operator', { data: list })
-            } catch (error) {
-                io.emit('list_close_chat_with_operator', { data: [] })
-            }
-        })
-        socket.on("get_list_close_chat", async function(data) {
-            try {
-                const list = await Chat.find({ is_open : false })  
-                .populate({ path : 'active_operator'})  
-                io.emit('list_close_chat', { data: list })
-            } catch (error) {
-                io.emit('list_close_chat', { data: [] })
-            }
-        })
+
     })
 }).catch( (err) => {
     console.log(err);
