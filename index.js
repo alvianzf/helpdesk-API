@@ -194,6 +194,16 @@ mongoose.connect(process.env.DB_URL, {
             })
         })
 
+        socket.on('visitor_typing', function(payload) {
+            console.log('visitor typing')
+            io.emit('set_visitor_typing', { data : payload})
+        })
+
+        socket.on('operator_typing', function(payload) {
+            console.log('operator typing')
+            io.emit('set_operator_typing', { data : payload})
+        })
+
     })
 }).catch( (err) => {
     console.log(err);
