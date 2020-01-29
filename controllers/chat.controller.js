@@ -127,7 +127,8 @@ module.exports = {
             const newMessage = new Message({
                 message,
                 is_guest : false,
-                is_operator : true
+                is_operator : true,
+                is_read : true
             })
 
             const storeMessage = await newMessage.save()
