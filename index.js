@@ -194,14 +194,121 @@ mongoose.connect(process.env.DB_URL, {
             })
         })
 
+        // visitor typing
         socket.on('visitor_typing', function(payload) {
             console.log('visitor typing')
             io.emit('set_visitor_typing', { data : payload})
         })
 
+        // operator typing
         socket.on('operator_typing', function(payload) {
             console.log('operator typing')
             io.emit('set_operator_typing', { data : payload})
+        })
+
+        // notification
+
+        socket.on('new_notification_list_global', async function(data) {
+            try {
+                const globalList = await Chat.find({ is_open : true, active_operator : null })
+                .populate({ path : 'message'})  
+                const globalArr = []
+                globalList.forEach( v => {
+                    globalArr.push({
+                        recent_operator: v.recent_operator,
+                        message: v.message,
+                        is_open: v.is_open,
+                        _id: v._id,
+                        ticket_id: v.ticket_id,
+                        website: v.website,
+                        createdAt: v.createdAt,
+                        updatedAt: v.updatedAt,
+                        active_operator: v.active_operator,
+                        unreadtotal : v.message.filter(v => v.is_read == false).length
+                    })
+                })
+                io.emit('get_new_notification_list_global', { data: globalArr })
+            } catch (error) {
+                io.emit('get_new_notification_list_global', { data : []})
+            }
+        })
+
+        socket.on('new_notification_list_group', async function(data) {
+            try {
+                const groupList = await Chat.find({ is_open : true, website : data.website, active_operator : null})
+                .populate({ path : 'message'})  
+                const groupArr = []
+                groupList.forEach( v => {
+                    groupArr.push({
+                        recent_operator: v.recent_operator,
+                        message: v.message,
+                        is_open: v.is_open,
+                        _id: v._id,
+                        ticket_id: v.ticket_id,
+                        website: v.website,
+                        createdAt: v.createdAt,
+                        updatedAt: v.updatedAt,
+                        active_operator: v.active_operator,
+                        unreadtotal : v.message.filter(v => v.is_read == false).length
+                    })
+                })
+                io.emit('get_new_notification_list_group', { data: groupArr })
+            } catch (error) {
+                io.emit('get_new_notification_list_group', { data : []})
+            }
+        })
+
+        // end of new notification
+
+        // current list of notification
+        socket.on('current_notification_list_global', async function(data) {
+            try {
+                const globalList = await Chat.find({ is_open : true, active_operator : { $ne : null} })
+                .populate({ path : 'message'})  
+                const globalArr = []
+                globalList.forEach( v => {
+                    globalArr.push({
+                        recent_operator: v.recent_operator,
+                        message: v.message,
+                        is_open: v.is_open,
+                        _id: v._id,
+                        ticket_id: v.ticket_id,
+                        website: v.website,
+                        createdAt: v.createdAt,
+                        updatedAt: v.updatedAt,
+                        active_operator: v.active_operator,
+                        unreadtotal : v.message.filter(v => v.is_read == false).length
+                    })
+                })
+                io.emit('get_current_notification_list_global', { data: globalArr })
+            } catch (error) {
+                io.emit('get_current_notification_list_global', { data : []})
+            }
+        })
+
+        socket.on('current_notification_list_group', async function(data) {
+            try {
+                const groupList = await Chat.find({ is_open : true, website : data.website, active_operator : { $ne : null}})
+                .populate({ path : 'message'})  
+                const groupArr = []
+                groupList.forEach( v => {
+                    groupArr.push({
+                        recent_operator: v.recent_operator,
+                        message: v.message,
+                        is_open: v.is_open,
+                        _id: v._id,
+                        ticket_id: v.ticket_id,
+                        website: v.website,
+                        createdAt: v.createdAt,
+                        updatedAt: v.updatedAt,
+                        active_operator: v.active_operator,
+                        unreadtotal : v.message.filter(v => v.is_read == false).length
+                    })
+                })
+                io.emit('get_current_notification_list_group', { data: groupArr })
+            } catch (error) {
+                io.emit('get_current_notification_list_group', { data : []})
+            }
         })
 
     })
