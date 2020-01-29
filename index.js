@@ -122,7 +122,9 @@ mongoose.connect(process.env.DB_URL, {
         socket.on('close_list_global', async function(data) {
             try {
                 const globalList = await Chat.find({ is_open : false})
-                .populate({ path : 'message'})  
+                .populate({ path : 'message'})
+                .populate({ path : 'active_operator'})  
+
                 const globalArr = []
                 globalList.forEach( v => {
                     globalArr.push({
@@ -148,6 +150,7 @@ mongoose.connect(process.env.DB_URL, {
             try {
                 const groupList = await Chat.find({ is_open : false, website : data.website})
                 .populate({ path : 'message'})  
+                .populate({ path : 'active_operator'})  
                 const groupArr = []
                 groupList.forEach( v => {
                     groupArr.push({
