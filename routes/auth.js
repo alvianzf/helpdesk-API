@@ -16,5 +16,5 @@ router.post('/list/cso/bywebsite', controller.userListByWebsite)
 router.post('/check/token', controller.checkToken)
 router.post('/change/password', controller.changePassword)
 router.post('/reset/password', controller.resetPassword)
-
+router.post('/logout', controller.Logout)
 module.exports = router

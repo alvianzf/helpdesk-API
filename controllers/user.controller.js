@@ -129,7 +129,7 @@ module.exports = {
         })
     },
     userListByWebsite : function(req, res, next) {
-        Model.find({ role : 'customer service', website : req.body.website }).populate({ path: 'website' }).select('-__v')
+        Model.find({ role : 'customer service', website : req.body.website, is_online : true }).populate({ path: 'website' }).select('-__v')
         .then((data) => {
             return res.status(200)
                 .json( response.success('User successfully received', data) )
@@ -178,17 +178,27 @@ module.exports = {
         .then((data) => {
             if(bcrypt.compareSync(req.body.password, data.password)) {
                 const token = jwt.sign({id: data._id}, req.app.get('secretKey'), { expiresIn: '4h' });
-                return res.status(200)
-                    .json( response.success('User successfully logined', 
-                        { 
-                            token: token,
-                            username : data.username,
-                            role : data.role,
-                            name : data.name,
-                            id : data._id,
-                            website : data.website
-                        }
-                    ))
+                Model.findByIdAndUpdate({ _id : data._id},{
+                    is_online : true
+                })
+                .then((dataResponse) => {
+                    return res.status(200)
+                        .json( response.success('User successfully logined', 
+                            { 
+                                token: token,
+                                username : dataResponse.username,
+                                role : dataResponse.role,
+                                name : dataResponse.name,
+                                id : dataResponse._id,
+                                website : dataResponse.website
+                            }
+                        ))
+                })
+                .catch((err) => {
+                    console.log(err)
+                    return res.status(422).json( response.error('Failed to update login status') )
+                })
+                
             } else {
                 return res.status(422).json( response.error('"Invalid username/password!!!') )
             }
@@ -200,7 +210,15 @@ module.exports = {
     checkToken : function(req, res ) {
         jwt.verify(req.body.token, req.app.get('secretKey'), (err, decoded) => {
             if (err) {
-                return res.status(422).json( response.error('Token Invalid!!!') )
+                Model.findByIdAndUpdate({ _id : decoded.id }, {
+                    is_online : false
+                })
+                .then((response) => {
+                    return res.status(422).json( response.error('Token Invalid!!!') )
+                })
+                .catch((err) => {
+                    return res.status(422).json( response.error('Failed to update login status') )
+                })
             } else {
                 return res.status(200)
                 .json( response.success('Token Valid', null) )
@@ -234,5 +252,23 @@ module.exports = {
             console.log(err)
             return res.status(422).json( response.error('Failed to update password!!!') )
         })
-    }
+    },
+    Logout : function(req, res ) {
+        jwt.verify(req.body.token, req.app.get('secretKey'), (err, decoded) => {
+            if (err) {
+                Model.findByIdAndUpdate({ _id : decoded.id }, {
+                    is_online : false
+                })
+                .then((response) => {
+                    return res.status(200).json( response.error('Logout!!!') )
+                })
+                .catch((err) => {
+                    return res.status(422).json( response.error('Failed to update login status') )
+                })
+            } else {
+                return res.status(200)
+                .json( response.success('Token Valid', null) )
+            }
+        });
+    },
 }
