@@ -54,7 +54,11 @@ mongoose.connect(process.env.DB_URL, {
                         createdAt: v.createdAt,
                         updatedAt: v.updatedAt,
                         active_operator: v.active_operator,
-                        unreadtotal : v.message.filter(v => v.is_read == false).length
+                        unreadtotal : v.message.filter(v => {
+                            if(v.is_read == false && v.is_guest == true) {
+                                return true
+                            }
+                        }).length
                     })
                 })
                 io.emit('get_new_list_global', { data: globalArr })
@@ -79,7 +83,11 @@ mongoose.connect(process.env.DB_URL, {
                         createdAt: v.createdAt,
                         updatedAt: v.updatedAt,
                         active_operator: v.active_operator,
-                        unreadtotal : v.message.filter(v => v.is_read == false).length
+                        unreadtotal : v.message.filter(v  => {
+                            if(v.is_read == false && v.is_guest == true) {
+                                return true
+                            }
+                        }).length
                     })
                 })
                 io.emit('get_new_list_group', { data: groupArr })
@@ -107,7 +115,11 @@ mongoose.connect(process.env.DB_URL, {
                         createdAt: v.createdAt,
                         updatedAt: v.updatedAt,
                         active_operator: v.active_operator,
-                        unreadtotal : v.message.filter(v => v.is_read == false).length
+                        unreadtotal : v.message.filter(v  => {
+                            if(v.is_read == false && v.is_guest == true) {
+                                return true
+                            }
+                        }).length
                     })
                 })
                 io.emit('get_current_list', { data: arr })
@@ -137,7 +149,11 @@ mongoose.connect(process.env.DB_URL, {
                         createdAt: v.createdAt,
                         updatedAt: v.updatedAt,
                         active_operator: v.active_operator,
-                        unreadtotal : v.message.filter(v => v.is_read == false).length
+                        unreadtotal : v.message.filter(v  => {
+                            if(v.is_read == false && v.is_guest == true) {
+                                return true
+                            }
+                        }).length
                     })
                 })
                 io.emit('get_close_list_global', { data: globalArr })
@@ -163,7 +179,11 @@ mongoose.connect(process.env.DB_URL, {
                         createdAt: v.createdAt,
                         updatedAt: v.updatedAt,
                         active_operator: v.active_operator,
-                        unreadtotal : v.message.filter(v => v.is_read == false).length
+                        unreadtotal : v.message.filter(v  => {
+                            if(v.is_read == false && v.is_guest == true) {
+                                return true
+                            }
+                        }).length
                     })
                 })
                 io.emit('get_close_list_group', { data: groupArr })
@@ -227,7 +247,11 @@ mongoose.connect(process.env.DB_URL, {
                         createdAt: v.createdAt,
                         updatedAt: v.updatedAt,
                         active_operator: v.active_operator,
-                        unreadtotal : v.message.filter(v => v.is_read == false).length
+                        unreadtotal : v.message.filter(v  => {
+                            if(v.is_read == false && v.is_guest == true) {
+                                return true
+                            }
+                        }).length
                     })
                 })
                 io.emit('get_new_notification_list_global', { data: globalArr })
@@ -252,7 +276,11 @@ mongoose.connect(process.env.DB_URL, {
                         createdAt: v.createdAt,
                         updatedAt: v.updatedAt,
                         active_operator: v.active_operator,
-                        unreadtotal : v.message.filter(v => v.is_read == false).length
+                        unreadtotal : v.message.filter(v  => {
+                            if(v.is_read == false && v.is_guest == true) {
+                                return true
+                            }
+                        }).length
                     })
                 })
                 io.emit('get_new_notification_list_group', { data: groupArr })
@@ -280,7 +308,11 @@ mongoose.connect(process.env.DB_URL, {
                         createdAt: v.createdAt,
                         updatedAt: v.updatedAt,
                         active_operator: v.active_operator,
-                        unreadtotal : v.message.filter(v => v.is_read == false).length
+                        unreadtotal : v.message.filter(v  => {
+                            if(v.is_read == false && v.is_guest == true) {
+                                return true
+                            }
+                        }).length
                     })
                 })
                 io.emit('get_current_notification_list_global', { data: globalArr })
@@ -305,7 +337,11 @@ mongoose.connect(process.env.DB_URL, {
                         createdAt: v.createdAt,
                         updatedAt: v.updatedAt,
                         active_operator: v.active_operator,
-                        unreadtotal : v.message.filter(v => v.is_read == false).length
+                        unreadtotal : v.message.filter(v  => {
+                            if(v.is_read == false && v.is_guest == true) {
+                                return true
+                            }
+                        }).length
                     })
                 })
                 io.emit('get_current_notification_list_group', { data: groupArr })
