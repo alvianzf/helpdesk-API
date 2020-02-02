@@ -67,6 +67,71 @@ mongoose.connect(process.env.DB_URL, {
             }
         })
 
+        // notification list global
+        socket.on('notification_list_global', async function(data) {
+            try {
+                const globalList = await Chat.find({ is_open : true})
+                .populate({ path : 'message'})  
+                const globalArr = []
+                globalList.forEach( v => {
+                    globalArr.push({
+                        recent_operator: v.recent_operator,
+                        message: v.message,
+                        is_open: v.is_open,
+                        _id: v._id,
+                        ticket_id: v.ticket_id,
+                        website: v.website,
+                        createdAt: v.createdAt,
+                        updatedAt: v.updatedAt,
+                        active_operator: v.active_operator,
+                        unreadtotal : v.message.filter(v => {
+                            if(v.is_read == false && v.is_guest == true) {
+                                return true
+                            }
+                        }).length
+                    })
+                })
+                io.emit('get_notification_list_global', { data: globalArr })
+            } catch (error) {
+                io.emit('get_notification_list_global', { data : []})
+            }
+        })
+        
+        // end notification list global
+
+        // notification list group
+
+        socket.on('notification_list_group', async function(data) {
+            try {
+                const groupList = await Chat.find({ is_open : true, website : data.website})
+                .populate({ path : 'message'})  
+                const groupArr = []
+                groupList.forEach( v => {
+                    groupArr.push({
+                        recent_operator: v.recent_operator,
+                        message: v.message,
+                        is_open: v.is_open,
+                        _id: v._id,
+                        ticket_id: v.ticket_id,
+                        website: v.website,
+                        createdAt: v.createdAt,
+                        updatedAt: v.updatedAt,
+                        active_operator: v.active_operator,
+                        unreadtotal : v.message.filter(v  => {
+                            if(v.is_read == false && v.is_guest == true) {
+                                return true
+                            }
+                        }).length
+                    })
+                })
+                io.emit('get_notification_list_group', { data: groupArr })
+            } catch (error) {
+                io.emit('get_notification_list_group', { data : []})
+            }
+        })
+
+        // end notification list group
+        
         socket.on('new_list_group', async function(data) {
             try {
                 const groupList = await Chat.find({ is_open : true, website : data.website, active_operator : null})
