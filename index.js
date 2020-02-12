@@ -167,7 +167,7 @@ mongoose.connect(process.env.DB_URL, {
         socket.on('current_list_chat', async function(data) {
             try {
                 const list = await Chat.find({ is_open : true, active_operator : data.active_operator })
-                .populate({ path : 'message'})  
+                .populate({ path : 'message'}).populate({ path : 'active_operator'})  
                 const arr = []
                 list.forEach( v => {
                     arr.push({
@@ -259,7 +259,7 @@ mongoose.connect(process.env.DB_URL, {
 
         // get message
         socket.on('send_message', async function(data) {
-            Chat.findById({_id : data.id}).populate({ path : 'message'})  
+            Chat.findById({_id : data.id}).populate({ path : 'message'}).populate({ path : 'active_operator'})  
             .then((res) => {
                 io.emit('get_message', { data: res })
             })
