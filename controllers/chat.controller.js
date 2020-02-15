@@ -5,7 +5,7 @@ const Chat = require('../models/chat.model'),
 
 module.exports = {
     createNewChannel: async (req, res) => {
-        const { ticket_id, message, website } = req.body
+        const { ticket_id, message, website, meta, meta_agent } = req.body
 
         try {
             const newMessage = new Message({
@@ -20,7 +20,9 @@ module.exports = {
             const newChat = new Chat({
                 ticket_id,
                 message: storeMessage._id,
-                website
+                website,
+                meta,
+                meta_agent
             })
 
             const storeChat = await newChat.save()

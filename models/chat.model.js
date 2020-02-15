@@ -23,6 +23,12 @@ const ChatScheme = new mongoose.Schema({
     website : {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Website'
+    },
+    meta : {
+        type : String
+    },
+    meta_agent : {
+        type : String
     }
 },{
     timestamps : true
