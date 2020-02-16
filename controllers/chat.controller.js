@@ -256,6 +256,7 @@ module.exports = {
             return res.status(400).json( response.error('Channel Not Found', null) )
 
         } catch (error) {
+            console.log(error)
             return res.status(422).json( response.error('Failed to send message') )
         }
     },
