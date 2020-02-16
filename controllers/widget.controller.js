@@ -15,15 +15,19 @@ module.exports = {
         })
     },
     create: async(req, res, next) => {
-        const widgetExists = await Model.findOne({
+        const widgetExis = await Model.findOne({ website : req.body.website })
+        if (widgetExis) {
+            return res.status(201).json( response.success('You only allow to add 1 widget for 1 website', null) )
+        }
+
+        await Model.create({
+            name : req.body.name,
+            title : req.body.title,
+            subtitle : req.body.subtitle,
+            background_color : req.body.background_color,
+            text_color : req.body.text_color,
             website : req.body.website
         })
-
-        if (widgetExists) {
-            return res.status(200)
-                .json( response.success('widget already created', widgetExists) )
-        }
-        await Model.create(req.body)
         .then((data) => {
             return res.status(200)
                 .json( response.success('widget successfully created', data) )
