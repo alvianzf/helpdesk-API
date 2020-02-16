@@ -10,6 +10,9 @@ const WebsiteSchema = new mongoose.Schema({
     },
     ip : {
         type: String
+    },
+    domain : {
+        type: String
     }
 },{
     timestamps : true

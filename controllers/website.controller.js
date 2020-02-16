@@ -16,12 +16,14 @@ module.exports = {
     create : async (req, res, next) => {
         const website = await new Model({
             name : req.body.name,
-            ip : req.body.ip
+            ip : req.body.ip,
+            domain : req.body.domain
         })
 
         const websiteExists = await Model.findOne({
             name : req.body.name,
-            ip : req.body.ip
+            ip : req.body.ip,
+            domain : req.body.domain
         })
 
         if (websiteExists) {
@@ -52,7 +54,8 @@ module.exports = {
     patch : function(req, res, next) {
         Model.findByIdAndUpdate(req.body.id, {
             name : req.body.name,
-            ip : req.body.ip
+            ip : req.body.ip,
+            domain : req.body.domain
         })
         .then((data) => {
             return res.status(200)
