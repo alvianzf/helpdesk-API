@@ -12,6 +12,17 @@ module.exports = {
             return res.status(422).json( response.error('Failed to get suggestion') )
         })
     },
+    find : function(req, res, next) {
+        Model.findById(req.body.id)
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('Suggestion successfully received', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to get suggestion') )
+        })
+    },
     create: async(req, res, next) => {
         const exist = await Model.findOne({ description : req.body.description })
         if (exist) {
