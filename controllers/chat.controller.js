@@ -122,6 +122,22 @@ module.exports = {
             return res.status(422).json( response.error('Failed to get chat') )
         })  
     },
+    getChatAndSetMinimize : async (req, res) => {
+        const chatExist = await Chat.findOne({ _id : req.body.id }).populate({ path: 'website' })
+        .populate({ path: 'message' })
+        .populate({ path: 'active_operator' })
+        .populate({ path: 'recent_operator' })
+        .select('-__v')
+        if (chatExist) {
+            const setMinimize = await Chat.findByIdAndUpdate({ _id : req.body.id },{
+                is_minimize : true
+            })
+            return res.status(200)
+                .json( response.success('chat successfully received', chatExist) )
+        } else {
+            return res.status(422).json( response.error('Failed to get chat') )
+        }
+    },
     sendNewMessageAsOperator : async (req, res) => {
         const { message } = req.body
 
@@ -161,7 +177,6 @@ module.exports = {
             })
 
             const chatExist = await Chat.findOne({ _id : req.body.id })
-            console.log(chatExist)
             if (chatExist) {
                 const storeMessage = await newMessage.save()
                 await chatExist.message.push(storeMessage._id)

@@ -54,6 +54,7 @@ mongoose.connect(process.env.DB_URL, {
                         createdAt: v.createdAt,
                         updatedAt: v.updatedAt,
                         active_operator: v.active_operator,
+                        is_minimize: v.is_minimize,
                         unreadtotal : v.message.filter(v => {
                             if(v.is_read == false && v.is_guest == true) {
                                 return true
@@ -84,6 +85,7 @@ mongoose.connect(process.env.DB_URL, {
                         createdAt: v.createdAt,
                         updatedAt: v.updatedAt,
                         active_operator: v.active_operator,
+                        is_minimize: v.is_minimize,
                         unreadtotal : v.message.filter(v => {
                             if(v.is_read == false && v.is_guest == true) {
                                 return true
@@ -117,6 +119,7 @@ mongoose.connect(process.env.DB_URL, {
                         createdAt: v.createdAt,
                         updatedAt: v.updatedAt,
                         active_operator: v.active_operator,
+                        is_minimize: v.is_minimize,
                         unreadtotal : v.message.filter(v  => {
                             if(v.is_read == false && v.is_guest == true) {
                                 return true
@@ -148,6 +151,7 @@ mongoose.connect(process.env.DB_URL, {
                         createdAt: v.createdAt,
                         updatedAt: v.updatedAt,
                         active_operator: v.active_operator,
+                        is_minimize: v.is_minimize,
                         unreadtotal : v.message.filter(v  => {
                             if(v.is_read == false && v.is_guest == true) {
                                 return true
@@ -180,6 +184,7 @@ mongoose.connect(process.env.DB_URL, {
                         createdAt: v.createdAt,
                         updatedAt: v.updatedAt,
                         active_operator: v.active_operator,
+                        is_minimize: v.is_minimize,
                         unreadtotal : v.message.filter(v  => {
                             if(v.is_read == false && v.is_guest == true) {
                                 return true
@@ -214,6 +219,7 @@ mongoose.connect(process.env.DB_URL, {
                         createdAt: v.createdAt,
                         updatedAt: v.updatedAt,
                         active_operator: v.active_operator,
+                        is_minimize: v.is_minimize,
                         unreadtotal : v.message.filter(v  => {
                             if(v.is_read == false && v.is_guest == true) {
                                 return true
@@ -244,6 +250,7 @@ mongoose.connect(process.env.DB_URL, {
                         createdAt: v.createdAt,
                         updatedAt: v.updatedAt,
                         active_operator: v.active_operator,
+                        is_minimize: v.is_minimize,
                         unreadtotal : v.message.filter(v  => {
                             if(v.is_read == false && v.is_guest == true) {
                                 return true
@@ -312,6 +319,7 @@ mongoose.connect(process.env.DB_URL, {
                         createdAt: v.createdAt,
                         updatedAt: v.updatedAt,
                         active_operator: v.active_operator,
+                        is_minimize: v.is_minimize,
                         unreadtotal : v.message.filter(v  => {
                             if(v.is_read == false && v.is_guest == true) {
                                 return true
@@ -341,6 +349,7 @@ mongoose.connect(process.env.DB_URL, {
                         createdAt: v.createdAt,
                         updatedAt: v.updatedAt,
                         active_operator: v.active_operator,
+                        is_minimize: v.is_minimize,
                         unreadtotal : v.message.filter(v  => {
                             if(v.is_read == false && v.is_guest == true) {
                                 return true
@@ -373,6 +382,7 @@ mongoose.connect(process.env.DB_URL, {
                         createdAt: v.createdAt,
                         updatedAt: v.updatedAt,
                         active_operator: v.active_operator,
+                        is_minimize: v.is_minimize,
                         unreadtotal : v.message.filter(v  => {
                             if(v.is_read == false && v.is_guest == true) {
                                 return true
@@ -402,6 +412,7 @@ mongoose.connect(process.env.DB_URL, {
                         createdAt: v.createdAt,
                         updatedAt: v.updatedAt,
                         active_operator: v.active_operator,
+                        is_minimize: v.is_minimize,
                         unreadtotal : v.message.filter(v  => {
                             if(v.is_read == false && v.is_guest == true) {
                                 return true

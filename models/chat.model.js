@@ -20,6 +20,7 @@ const ChatScheme = new mongoose.Schema({
         ref: 'Message'
     }],
     is_open : { type : Boolean, default : true },
+    is_minimize : { type : Boolean, default : false },
     website : {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Website'
