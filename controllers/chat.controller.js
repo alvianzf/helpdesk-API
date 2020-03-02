@@ -222,7 +222,8 @@ module.exports = {
             const chatExist = await Chat.findOne({ _id : req.body.id })
             if (chatExist && !chatExist.active_operator) {
                 const assignOperator = await Chat.findByIdAndUpdate({ _id : req.body.id },{
-                    active_operator : req.body.operator
+                    active_operator : req.body.operator,
+                    is_minimize : true
                 })
                 return res.status(201).json( response.success('Chat successfully assigned', assignOperator) )
             } else {
