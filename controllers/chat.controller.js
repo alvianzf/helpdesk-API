@@ -2,7 +2,7 @@ const Chat = require('../models/chat.model'),
     Message = require('../models/message.model'),
     response  = require('../helpers/response'),
     User = require('../models/user.model')
-
+    moment = require('moment')
 module.exports = {
     createNewChannel: async (req, res) => {
         const { ticket_id, message, website, meta, meta_agent } = req.body
@@ -501,43 +501,74 @@ module.exports = {
         Chat.aggregate([
             {
                 $group: {
-                    _id : "$active_operator",
-                    count : { $sum : 1}
+                    _id: {
+                        date : { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                        operator : "$active_operator"
+                    },
+                    total_count : { $sum : 1}
                 }
             },
             {
                 $project: {
-                    _id : "$_id",
-                    operator : "$_id",
-                    total_count : "$count"
+                    _id : "$_id.operator",
+                    operator : "$_id.operator",
+                    date : "$_id.date",
+                    total_count : "$total_count"
                 }
             }
         ]).exec((err, result) => {
+            console.log(result)
             if(err) {
                 console.log(err)
                 return res.status(422).json( response.error('Failed to get chat') )
             } else {
-                // return res.status(200)
-                //             .json( response.success('chat successfully updated', result) )
                 User.populate(
                     result, {
                         path : "operator",
                         select : "name"
                     },
                     (err, populatedResult) => {
+                        // return res.status(200)
+                        //     .json( response.success('chat successfully updated', populatedResult) )
                         if(err) {
                             console.log(err)
                             return res.status(422).json( response.error('Failed to get chat') )
                         } else {
-                            var set = []
-                            set.push(["operator name","total count"])
+                            var globalArr = []
+                            var line = []
+                            var lineForLoop = []
+                            var date = []
+                            var seriesObj = {}
+                            line.push("Date")
                             populatedResult.map(key => {
-                                let check = [key._id ? key.operator.name : "not served", key.total_count]
-                                set.push(check)
-                                return set
+                                let check = key._id ? key.operator.name : "not served"
+                                if(!line.includes(check)) {
+                                    line.push(check)
+                                    lineForLoop.push(check)
+                                }
+                                return line
                             })
+                            globalArr.push(line)
+                            populatedResult.map((key, i) => {
+                                let check = key._id ? key.operator.name : "not served"
+                                let data = 0
+                                date = []
+                                date.push(key.date)
+                                lineForLoop.map(v => {
+                                    if(v == check && key.date == date[0]) {
+                                        date.push(key.total_count)
+                                    } else {
+                                        date.push(0)
+                                    }
+                                })
+                                globalArr.push(date)
+                                return date
+                            })
+
+                            
+                            
                             return res.status(200)
-                            .json( response.success('chat successfully updated', set) )
+                            .json( response.success('chat successfully updated', globalArr) )
                         }
                     }
                 )
