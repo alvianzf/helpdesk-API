@@ -426,6 +426,10 @@ mongoose.connect(process.env.DB_URL, {
             }
         })
 
+        socket.on('new_reply', function(data) {
+            io.emit('send_notif_new_reply', { data : data})
+        })
+
     })
 }).catch( (err) => {
     console.log(err);
