@@ -473,6 +473,10 @@ module.exports = {
                     return res.status(200)
                     .json( response.success('chat successfully updated', null) )
                 })
+                .catch((err) => {
+                    console.log(err)
+                    return res.status(422).json( response.error('Failed to get chat') )
+                }) 
             })
 
             
