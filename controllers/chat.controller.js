@@ -33,78 +33,62 @@ module.exports = {
             return res.status(422).json( response.error('Failed to create message') )
         }
     },
-    listChatNoOperatorByWebsite : async (req, res) => {
-        Chat.find({ website : req.body.website, active_operator : null})
+    listNewGlobal : (req, res) => {
+        Chat.find({ is_open : true, active_operator : null })
         .then((data) => {
             return res.status(200)
                 .json( response.success('chat successfully received', data) )
         })
         .catch((err) => {
-            console.log(err)
             return res.status(422).json( response.error('Failed to get chat') )
-        })  
+        })
     },
-    listActive : async (req, res) => {
-        Chat.find({ is_open : true})
-            .populate({ path: 'active_operator' })
-            .select('-__v')
-
+    listNewGlobalGroup : (req, res) => {
+        Chat.find({ is_open : true, website : req.body.website, active_operator : null})
+        .populate({ path : 'message'})  
         .then((data) => {
             return res.status(200)
                 .json( response.success('chat successfully received', data) )
         })
         .catch((err) => {
-            console.log(err)
             return res.status(422).json( response.error('Failed to get chat') )
-        })  
+        })
     },
-    listActiveChatByWebsite : async (req, res) => {
-        Chat.find( { $or:[
-                { website : req.body.website, is_open : true, active_operator : null},
-                { website : req.body.website, is_open : true, active_operator : req.body.operator},
-            ] })
-            .populate({ path: 'active_operator' })
-            .select('-__v')
-
+    listCurrentChat : (req, res) => {
+        Chat.find({ is_open : true, active_operator : req.body.active_operator })
+            .populate({ path : 'message'}).populate({ path : 'active_operator'})
+            .select('-__v')  
         .then((data) => {
             return res.status(200)
                 .json( response.success('chat successfully received', data) )
         })
         .catch((err) => {
-            console.log(err)
             return res.status(422).json( response.error('Failed to get chat') )
-        })  
+        })
     },
-    listRecent: async (req, res) => {
+    listCloseGlobal : (req, res) => {
         Chat.find({ is_open : false})
-            .populate({ path: 'active_operator' })
-            .select('-__v')
-
+                .populate({ path : 'message'})
+                .populate({ path : 'active_operator'})  
         .then((data) => {
             return res.status(200)
                 .json( response.success('chat successfully received', data) )
         })
         .catch((err) => {
-            console.log(err)
             return res.status(422).json( response.error('Failed to get chat') )
-        })  
+        })
     },
-    listRecentChatByWebsite : async (req, res) => {
-        Chat.find( { $or:[
-                { website : req.body.website, is_open : false, active_operator : null},
-                { website : req.body.website, is_open : false, active_operator : req.body.operator},
-            ] })
-            .populate({ path: 'active_operator' })
-            .select('-__v')
-
+    listCloseGroup : (req, res) => {
+        Chat.find({ is_open : false, website : req.body.website})
+                .populate({ path : 'message'})  
+                .populate({ path : 'active_operator'})  
         .then((data) => {
             return res.status(200)
                 .json( response.success('chat successfully received', data) )
         })
         .catch((err) => {
-            console.log(err)
             return res.status(422).json( response.error('Failed to get chat') )
-        })  
+        })
     },
     getChatById : async (req, res) => {
         Chat.findById(req.body.id)
