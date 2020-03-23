@@ -54,8 +54,10 @@ mongoose.connect(process.env.DB_URL, {
             })
         })
         socket.on('operator_typing', function(data) {
-            console.log(data)
             io.emit('get_operator_typing',data)
+        })
+        socket.on('visitor_typing', function(data) {
+            io.emit('get_visitor_typing', data)
         })
     })
 }).catch( (err) => {
