@@ -48,6 +48,11 @@ mongoose.connect(process.env.DB_URL, {
                 data : data
             })
         })
+        socket.on('notif_event', function(data) {
+            io.emit('get_notif_event', {
+                data : data
+            })
+        })
     })
 }).catch( (err) => {
     console.log(err);
