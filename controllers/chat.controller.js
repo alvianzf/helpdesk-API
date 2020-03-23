@@ -209,7 +209,11 @@ module.exports = {
                     active_operator : req.body.operator,
                     is_minimize : true
                 })
-                return res.status(201).json( response.success('Chat successfully assigned', assignOperator) )
+                const newChat = await Chat.findOne({ _id : req.body.id})
+                .populate({ path: 'active_operator' })
+                .populate({ path: 'recent_operator' })
+                .select('-__v')
+                return res.status(201).json( response.success('Chat successfully assigned', newChat) )
             } else {
                 return res.json({
                     success: true,
