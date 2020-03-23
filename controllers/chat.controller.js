@@ -569,5 +569,57 @@ module.exports = {
             }
         })
 
+    },
+    getNotifList : async (req, res) => {
+        if(req.body.role == "super admin") {
+            const globalList = await Chat.find({ is_open : true})
+            .populate({ path : 'message'})  
+            const globalArr = []
+            globalList.forEach( v => {
+                globalArr.push({
+                    recent_operator: v.recent_operator,
+                    message: v.message,
+                    is_open: v.is_open,
+                    _id: v._id,
+                    ticket_id: v.ticket_id,
+                    website: v.website,
+                    createdAt: v.createdAt,
+                    updatedAt: v.updatedAt,
+                    active_operator: v.active_operator,
+                    is_minimize: v.is_minimize,
+                    unreadtotal : v.message.filter(v => {
+                        if(v.is_read == false && v.is_guest == true) {
+                            return true
+                        }
+                    }).length
+                })
+            })
+            return res.status(200)
+                .json( response.success('chat successfully received', globalArr) )
+        }
+        else {
+            const groupList = await Chat.find({ is_open : true, website : req.body.website})
+            .populate({ path : 'message'})  
+            const groupArr = []
+            groupList.forEach( v => {
+                groupArr.push({
+                    recent_operator: v.recent_operator,
+                    message: v.message,
+                    is_open: v.is_open,
+                    _id: v._id,
+                    ticket_id: v.ticket_id,
+                    website: v.website,
+                    createdAt: v.createdAt,
+                    updatedAt: v.updatedAt,
+                    active_operator: v.active_operator,
+                    is_minimize: v.is_minimize,
+                    unreadtotal : v.message.filter(v  => {
+                        if(v.is_read == false && v.is_guest == true) {
+                            return true
+                        }
+                    }).length
+                })
+            })
+        }
     }
 }

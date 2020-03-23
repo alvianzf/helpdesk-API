@@ -31,5 +31,6 @@ router.post('/count/unread', controller.countUnreadMessageById)
 router.post('/setread', controller.setRead)
 router.get('/totalchatperagent', controller.totalChatPerAgent)
 router.delete('/destroy', controller.destroy)
+router.post('/notif/list', controller.getNotifList)
 
 module.exports = router
