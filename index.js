@@ -53,6 +53,10 @@ mongoose.connect(process.env.DB_URL, {
                 data : data
             })
         })
+        socket.on('operator_typing', function(data) {
+            console.log(data)
+            io.emit('get_operator_typing',data)
+        })
     })
 }).catch( (err) => {
     console.log(err);
