@@ -620,6 +620,9 @@ module.exports = {
                     }).length
                 })
             })
+
+            return res.status(200)
+                .json( response.success('chat successfully received', globalArr) )
         }
     }
 }
