@@ -43,6 +43,11 @@ mongoose.connect(process.env.DB_URL, {
         socket.on('reply_client', function(data) {
             io.emit('get_reply_client', { data : data})
         })
+        socket.on('new_ticket', function(data) {
+            io.emit('get_new_ticket',{
+                data : data
+            })
+        })
     })
 }).catch( (err) => {
     console.log(err);
