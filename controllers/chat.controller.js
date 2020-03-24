@@ -574,7 +574,7 @@ module.exports = {
         if(req.body.role == "super admin") {
             const globalList = await Chat.find({ is_open : true})
             .populate({ path : 'message'})  
-            const globalArr = []
+            let globalArr = []
             globalList.forEach( v => {
                 globalArr.push({
                     recent_operator: v.recent_operator,
@@ -600,9 +600,9 @@ module.exports = {
         else {
             const groupList = await Chat.find({ is_open : true, website : req.body.website})
             .populate({ path : 'message'})  
-            const groupArr = []
+            let arr = []
             groupList.forEach( v => {
-                groupArr.push({
+                arr.push({
                     recent_operator: v.recent_operator,
                     message: v.message,
                     is_open: v.is_open,
@@ -622,7 +622,7 @@ module.exports = {
             })
 
             return res.status(200)
-                .json( response.success('chat successfully received', globalArr) )
+                .json( response.success('chat successfully received', arr) )
         }
     }
 }
