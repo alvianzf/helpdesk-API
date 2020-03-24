@@ -468,7 +468,7 @@ module.exports = {
     setRead : (req, res) => {
         Chat.findById(req.body.id)
         .then(async (data) => {
-            // console.log(data.message)
+            console.log(data.message)
             await data.message.forEach(v => {
                 Message.findByIdAndUpdate({ _id : v._id},{
                     is_read : true
