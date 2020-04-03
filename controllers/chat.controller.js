@@ -151,7 +151,6 @@ module.exports = {
     },
     sendNewMessageAsSystem : async (req, res) => {
         const { message } = req.body
-        console.log(req.body)
         try {
             const newMessage = new Message({
                 message,
@@ -468,7 +467,6 @@ module.exports = {
     setRead : (req, res) => {
         Chat.findById(req.body.id)
         .then(async (data) => {
-            console.log(data.message)
             await data.message.forEach(v => {
                 Message.findByIdAndUpdate({ _id : v._id},{
                     is_read : true
@@ -510,7 +508,6 @@ module.exports = {
                 }
             }
         ]).exec((err, result) => {
-            console.log(result)
             if(err) {
                 console.log(err)
                 return res.status(422).json( response.error('Failed to get chat') )
@@ -534,7 +531,8 @@ module.exports = {
                             var seriesObj = {}
                             line.push("Date")
                             populatedResult.map(key => {
-                                let check = key._id ? key.operator.name : "not served"
+                                console.log(key)
+                                let check = key.operator ? key.operator.name : "not served"
                                 if(!line.includes(check)) {
                                     line.push(check)
                                     lineForLoop.push(check)
@@ -543,7 +541,7 @@ module.exports = {
                             })
                             globalArr.push(line)
                             populatedResult.map((key, i) => {
-                                let check = key._id ? key.operator.name : "not served"
+                                let check = key.operator ? key.operator.name : "not served"
                                 let data = 0
                                 date = []
                                 date.push(key.date)
