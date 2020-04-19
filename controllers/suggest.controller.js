@@ -30,7 +30,9 @@ module.exports = {
         }
 
         await Model.create({
-            description : req.body.description
+            description : req.body.description,
+            key : req.body.key,
+            website : req.body.website,
         })
         .then((data) => {
             return res.status(200)
@@ -43,7 +45,9 @@ module.exports = {
     },
     update : async (req, res, next) => {
         await Model.findByIdAndUpdate(req.body.id, {
-            description : req.body.description
+            description : req.body.description,
+            key : req.body.key,
+            website : req.body.website
         })
         .then((data) => {
             return res.status(200)
