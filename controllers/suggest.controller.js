@@ -2,7 +2,7 @@ const Model = require('../models/suggest.model')
 
 module.exports = {
     get: function(req, res, next) {
-        Model.find()
+        Model.find().populate({ path: 'website'}).select('-__v')
         .then((data) => {
             return res.status(200)
                 .json( response.success('suggestion successfully received', data) )
@@ -68,6 +68,19 @@ module.exports = {
         .catch((err) => {
             console.log(err)
             return res.status(422).json( response.error('Failed to delete suggestion') )
+        })
+    },
+    getByWebsite : function(req,res, next) {
+        Model.find({
+            website : req.body.website
+        }).populate({ path: 'website'}).select('-__v')
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('suggestion successfully received', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to get suggestion') )
         })
     }
 }

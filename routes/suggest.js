@@ -7,5 +7,6 @@ router.post('/find', controller.find)
 router.post('/save', controller.create)
 router.put('/update', controller.update)
 router.delete('/delete', controller.destroy)
+router.post('/list/bywebsite', controller.getByWebsite)
 
 module.exports = router
