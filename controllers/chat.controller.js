@@ -91,6 +91,8 @@ module.exports = {
         })
     },
     getChatById : async (req, res) => {
+        console.log(`get chat by id ${req.body.id}`)
+        console.log(req)
         Chat.findById(req.body.id)
             .populate({ path: 'website' })
             .populate({ path: 'message' })
@@ -102,7 +104,6 @@ module.exports = {
                 .json( response.success('chat successfully received', data) )
         })
         .catch((err) => {
-            console.log(err)
             return res.status(422).json( response.error('Failed to get chat') )
         })  
     },
@@ -471,17 +472,15 @@ module.exports = {
                 Message.findByIdAndUpdate({ _id : v._id},{
                     is_read : true
                 })
-                .then((data) => {
-                    return res.status(200)
-                    .json( response.success('chat successfully updated', null) )
+                .then((res) => {
+                    console.log('success')
                 })
                 .catch((err) => {
-                    console.log(err)
-                    return res.status(422).json( response.error('Failed to get chat') )
-                }) 
+                    console.log('error')
+                })
             })
-
-            
+            return res.status(200)
+                    .json( response.success('chat successfully updated', null) )
         })
         .catch((err) => {
             console.log(err)
