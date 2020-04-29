@@ -91,8 +91,6 @@ module.exports = {
         })
     },
     getChatById : async (req, res) => {
-        console.log(`get chat by id ${req.body.id}`)
-        console.log(req)
         Chat.findById(req.body.id)
             .populate({ path: 'website' })
             .populate({ path: 'message' })
@@ -258,6 +256,45 @@ module.exports = {
             }
 
             return res.status(400).json( response.error('Channel Not Found', null) )
+
+        } catch (error) {
+            console.log(error)
+            return res.status(422).json( response.error('Failed to send message') )
+        }
+    },
+    sendImageAsGuestAndNewChannel: async (req, res) => {
+        const file = req.file
+        const { ticket_id, website, meta, meta_agent } = req.body
+
+        try {
+            console.log(req.body)
+            if (!file) {
+                return res.status(415).json( response.error('File is not supported') )
+            } else if (file.size > 5000000) {
+                await fs.unlinkSync(file.path)
+                return res.status(413).json( response.error('File size too large') )
+            }
+
+            
+            const newMessage = new Message({
+                media : file.filename,
+                is_guest : true,
+                is_operator : false
+            })
+
+            const storeMessage = await newMessage.save()
+
+            const newChat = new Chat({
+                ticket_id,
+                message: storeMessage._id,
+                website,
+                meta,
+                meta_agent
+            })
+
+            const storeChat = await newChat.save()
+
+            return res.status(201).json( response.success('Message successfully created', storeChat) )
 
         } catch (error) {
             console.log(error)
