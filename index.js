@@ -68,6 +68,9 @@ mongoose.connect(process.env.DB_URL, {
         })
         socket.on('closing_ticket', function(data) {
             io.emit('get_closing_ticket', { data : data})
+        }),
+        socket.on('start_reminder', function(data) {
+            io.emit('get_start_reminder', data)
         })
     })
 }).catch( (err) => {
