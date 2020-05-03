@@ -10,5 +10,6 @@ router.post('/manage-splash-screen', upload.single('attach'), controller.manageS
 router.post('/store/welcome-message', controller.storeWelcomeText)
 router.delete('/delete/welcome-message', controller.removeWelcomeText)
 router.post('/find', controller.find)
+router.post('/manage-reminder', controller.manageReminder)
 
 module.exports = router

@@ -163,5 +163,19 @@ module.exports = {
             console.log(err)
             return res.status(422).json( response.error('Failed to get widget') )
         })
+    },
+    manageReminder: (req, res) => {
+        Model.findByIdAndUpdate(req.body.id, {
+            reminder_text : req.body.reminder_text,
+            reminder_duration : req.body.reminder_duration
+        })
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('Widget reminder successfully updated', data) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to update reminder widget') )
+        })
     }
 }

@@ -37,6 +37,12 @@ const WidgetSchema = new mongoose.Schema({
     },
     splashscreenduration : {
         type : Number
+    },
+    reminder_text : {
+        type : String
+    },
+    reminder_duration : {
+        type : Number
     }
 },{
     timestamps : true
