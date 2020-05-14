@@ -620,6 +620,7 @@ module.exports = {
                     createdAt: v.createdAt,
                     updatedAt: v.updatedAt,
                     active_operator: v.active_operator,
+                    is_red: v.is_red,
                     is_minimize: v.is_minimize,
                     unreadtotal : v.message.filter(v => {
                         if(v.is_read == false && v.is_guest == true) {
