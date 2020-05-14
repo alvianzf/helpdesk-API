@@ -33,5 +33,6 @@ router.post('/setread', controller.setRead)
 router.get('/totalchatperagent', controller.totalChatPerAgent)
 router.delete('/destroy', controller.destroy)
 router.post('/notif/list', controller.getNotifList)
+router.post('/setred', controller.setRed)
 
 module.exports = router

@@ -75,6 +75,9 @@ mongoose.connect(process.env.DB_URL, {
         socket.on('start_closing', function(data) {
             io.emit('get_start_closing', data)
         })
+        socket.on('start_red', function(data) {
+            io.emit('get_start_red', data)
+        })
     })
 }).catch( (err) => {
     console.log(err);

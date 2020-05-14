@@ -30,7 +30,8 @@ const ChatScheme = new mongoose.Schema({
     },
     meta_agent : {
         type : String
-    }
+    },
+    is_red : { type : Boolean, default : false }
 },{
     timestamps : true
 })

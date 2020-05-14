@@ -658,5 +658,18 @@ module.exports = {
             return res.status(200)
                 .json( response.success('chat successfully received', arr) )
         }
-    }
+    },
+    setRed : (req, res) => {
+        Chat.findByIdAndUpdate({ _id : req.body.id},{
+            is_red : req.body.red
+        })
+        .then((data) => {
+            return res.status(200)
+                .json( response.success('chat successfully updated', null) )
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(422).json( response.error('Failed to red chat') )
+        })
+    },
 }
