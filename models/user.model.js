@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-    bcrypt = require('bcrypt')
+    bcrypt = require('bcryptjs')
     saltRounds = 10
     
 const UserSchema = new mongoose.Schema({

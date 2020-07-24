@@ -69,7 +69,8 @@ module.exports = {
     listCloseGlobal : (req, res) => {
         Chat.find({ is_open : false})
                 .populate({ path : 'message'})
-                .populate({ path : 'active_operator'})  
+                .populate({ path : 'active_operator'})
+                .sort({createdAt: -1})  
         .then((data) => {
             return res.status(200)
                 .json( response.success('chat successfully received', data) )
