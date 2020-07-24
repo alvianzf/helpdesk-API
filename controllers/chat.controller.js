@@ -83,6 +83,7 @@ module.exports = {
         Chat.find({ is_open : false, website : req.body.website})
                 .populate({ path : 'message'})  
                 .populate({ path : 'active_operator'})  
+                .sort({createdAt: -1})
         .then((data) => {
             return res.status(200)
                 .json( response.success('chat successfully received', data) )
