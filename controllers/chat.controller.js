@@ -92,6 +92,46 @@ module.exports = {
             return res.status(422).json( response.error('Failed to get chat') )
         })
     },
+    listCloseGlobalFilter : (req, res) => {
+        if(req.body.filter_option == "untaken") {
+            Chat.find({ is_open : false, active_operator: { $ne: null }} )
+                    .populate({ path : 'message'})  
+                    .populate({ path : 'active_operator'})  
+                    .sort({createdAt: -1})
+            .then((data) => {
+                return res.status(200)
+                    .json( response.success('chat successfully received', data) )
+            })
+            .catch((err) => {
+                return res.status(422).json( response.error('Failed to get chat') )
+            })
+        } if(req.body.filter_option == "unread") { 
+            Chat.find({ is_open : false, 'message.is_read': false })
+                    .populate({ path : 'message'})  
+                    .populate({ path : 'active_operator'})  
+                    .sort({createdAt: -1})
+            .then((data) => {
+                return res.status(200)
+                    .json( response.success('chat successfully received', data) )
+            })
+            .catch((err) => {
+                return res.status(422).json( response.error('Failed to get chat') )
+            })
+        } else {
+            Chat.find({ is_open : false, website : req.body.website})
+                .populate({ path : 'message'})  
+                .populate({ path : 'active_operator'})  
+                .sort({createdAt: -1})
+                .then((data) => {
+                    return res.status(200)
+                        .json( response.success('chat successfully received', data) )
+                })
+                .catch((err) => {
+                    return res.status(422).json( response.error('Failed to get chat') )
+                })
+        }
+        
+    },
     getChatById : async (req, res) => {
         Chat.findById(req.body.id)
             .populate({ path: 'website' })
