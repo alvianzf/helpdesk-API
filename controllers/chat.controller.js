@@ -93,14 +93,14 @@ module.exports = {
         })
     },
     listCloseGlobalFilter : (req, res) => {
+        console.log(req.body.filter_option == "untaken")
         if(req.body.filter_option == "untaken") {
-            Chat.find({ is_open : false, active_operator: { $ne: null }} )
-                    .populate({ path : 'message'})  
-                    .populate({ path : 'active_operator'})  
+            Chat.find({ is_open : false, is_taken: false } )
+                    .populate({ path : 'message'})
                     .sort({createdAt: -1})
-            .then((data) => {
-                return res.status(200)
-                    .json( response.success('chat successfully received', data) )
+            .then((result) => {
+                console.log(response.success('filter successfully received', result))
+                return response.success('chat successfully received', result)
             })
             .catch((err) => {
                 return res.status(422).json( response.error('Failed to get chat') )
@@ -111,6 +111,7 @@ module.exports = {
                     .populate({ path : 'active_operator'})  
                     .sort({createdAt: -1})
             .then((data) => {
+                console.log(data)
                 return res.status(200)
                     .json( response.success('chat successfully received', data) )
             })
@@ -247,7 +248,8 @@ module.exports = {
             if (chatExist && !chatExist.active_operator) {
                 const assignOperator = await Chat.findByIdAndUpdate({ _id : req.body.id },{
                     active_operator : req.body.operator,
-                    is_minimize : true
+                    is_minimize : true,
+                    is_taken : true
                 })
                 const newChat = await Chat.findOne({ _id : req.body.id})
                 .populate({ path: 'active_operator' })
