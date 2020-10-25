@@ -93,19 +93,48 @@ module.exports = {
         })
     },
     listCloseGlobalFilter : (req, res) => {
+        console.log(req.body)
         // console.log(req.body.filter_option == "untaken")
-        // if(req.body.filter_option == "untaken") {
-        //     Chat.find({ is_open : false, is_taken: false } )
-        //             .populate({ path : 'message'})
-        //             .sort({createdAt: -1})
-        //     .then((result) => {
-        //         console.log(response.success('filter successfully received', result))
-        //         return response.success('chat successfully received', result)
-        //     })
-        //     .catch((err) => {
-        //         return res.status(422).json( response.error('Failed to get chat') )
-        //     })
-        // } if(req.body.filter_option == "unread") { 
+        if(req.body.filter_option == "untaken") {
+            Chat.find({ is_open : false, active_operator: { $exists: false}})
+                .populate({ path : 'message'})  
+                .sort({createdAt: -1})
+            .then((data) => {
+                return res.status(200)
+                    .json( response.success('chat successfully received', data) )
+            })
+            .catch((err) => {
+                return res.status(422).json( response.error('Failed to get chat') )
+            })
+        } else if(req.body.filter_option == "unread")
+        {
+            Chat.find({ is_open : false, 'message.is_read': false })
+                    .populate({ path : 'message'})  
+                    .populate({ path : 'active_operator'})  
+                    .sort({createdAt: -1})
+            .then((data) => {
+                console.log(data)
+                return res.status(200)
+                    .json( response.success('chat successfully received', data) )
+            })
+            .catch((err) => {
+                return res.status(422).json( response.error('Failed to get chat') )
+            })
+        }
+        else {
+            Chat.find({ is_open : false})
+                .populate({ path : 'message'})
+                .populate({ path : 'active_operator'})
+                .sort({createdAt: -1})  
+            .then((data) => {
+                return res.status(200)
+                    .json( response.success('chat successfully received', data) )
+            })
+            .catch((err) => {
+                return res.status(422).json( response.error('Failed to get chat') )
+            })
+        } 
+        // if(req.body.filter_option == "unread") { 
         //     Chat.find({ is_open : false, 'message.is_read': false })
         //             .populate({ path : 'message'})  
         //             .populate({ path : 'active_operator'})  
@@ -131,17 +160,7 @@ module.exports = {
         //             return res.status(422).json( response.error('Failed to get chat') )
         //         })
         // }
-        Chat.find({ is_open : false, website : req.body.website})
-                .populate({ path : 'message'})  
-                .populate({ path : 'active_operator'})  
-                .sort({createdAt: -1})
-        .then((data) => {
-            return res.status(200)
-                .json( response.success('chat successfully received', data) )
-        })
-        .catch((err) => {
-            return res.status(422).json( response.error('Failed to get chat') )
-        })
+        
         
     },
     getChatById : async (req, res) => {
